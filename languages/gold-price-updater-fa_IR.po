@@ -1,0 +1,949 @@
+# Persian (Iran) translation for Gold Price Updater
+# Copyright (C) 2026 AraDev
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2026-09-03 22:00+0330\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_x;_n:1,2;_nx:1,2;_ex\n"
+"X-Poedit-Basepath: ../\n"
+"Language: fa_IR\n"
+"Project-Id-Version: Gold Price Updater\n"
+"Last-Translator: AraDev\n"
+
+#. Plugin Name
+msgid "Gold Price Updater"
+msgstr "بروزرسان خودکار قیمت طلا"
+
+#. Plugin URI
+msgid "https://github.com/hamidahangaryan/gold-price-updater"
+msgstr "https://github.com/hamidahangaryan/gold-price-updater"
+
+#. Description
+msgid "Automatic gold price sync for WooCommerce: fetch, validate, buffer, and recalculate every managed product with a dedicated pricing engine."
+msgstr "بروزرسانی خودکار قیمت طلا برای ووکامرس: دریافت، اعتبارسنجی، بافر و محاسبه مجدد هر محصول مدیریت شده با موتور قیمت‌گذاری اختصاصی."
+
+#. Author
+msgid "Hamid Ahangaryan"
+msgstr "حمید آهاریان"
+
+#. Author URI
+msgid "https://aradev.ir"
+msgstr "https://aradev.ir"
+
+#: includes/class-gpu-admin.php
+msgid "Gold Price Updater"
+msgstr "بروزرسان خودکار قیمت طلا"
+
+#: includes/class-gpu-admin.php
+msgid "Sync Now"
+msgstr "بروزرسانی کن"
+
+#: includes/class-gpu-admin.php
+msgid "Force Sync"
+msgstr "بروزرسانی اجباری"
+
+#: includes/class-gpu-admin.php
+msgid "Gold Price (18K)"
+msgstr "قیمت طلا (۱۸ عیار)"
+
+#: includes/class-gpu-admin.php
+msgid "Live from API"
+msgstr "زنده از API"
+
+#: includes/class-gpu-admin.php
+msgid "Not connected"
+msgstr "اتصال برقرار نیست"
+
+#: includes/class-gpu-admin.php
+msgid "Effective Price"
+msgstr "قیمت نهایی"
+
+#: includes/class-gpu-admin.php
+msgid "buffer"
+msgstr "بافر"
+
+#: includes/class-gpu-admin.php
+msgid "API Status"
+msgstr "وضعیت API"
+
+#: includes/class-gpu-admin.php
+msgid "Connected"
+msgstr "متصل"
+
+#: includes/class-gpu-admin.php
+msgid "Disconnected"
+msgstr "قطع شده"
+
+#: includes/class-gpu-admin.php
+msgid "Last Sync"
+msgstr "آخرین بروزرسانی"
+
+#: includes/class-gpu-admin.php
+msgid "Never synced"
+msgstr "هنوز بروزرسانی نشده"
+
+#: includes/class-gpu-admin.php
+msgid "All good"
+msgstr "همه چیز خوب است"
+
+#: includes/class-gpu-admin.php
+msgid "Product Update Progress"
+msgstr "پیشرفت بروزرسانی محصولات"
+
+#: includes/class-gpu-admin.php
+msgid "Updated"
+msgstr "بروزرسانی شده"
+
+#: includes/class-gpu-admin.php
+msgid "Skipped"
+msgstr "رد شده"
+
+#: includes/class-gpu-admin.php
+msgid "Errors"
+msgstr "خطاها"
+
+#: includes/class-gpu-admin.php
+msgid "Pending"
+msgstr "در انتظار"
+
+#: includes/class-gpu-admin.php
+msgid "General"
+msgstr "عمومی"
+
+#: includes/class-gpu-admin.php
+msgid "Pricing"
+msgstr "قیمت‌گذاری"
+
+#: includes/class-gpu-admin.php
+msgid "API"
+msgstr "API"
+
+#: includes/class-gpu-admin.php
+msgid "Sync"
+msgstr "بروزرسانی"
+
+#: includes/class-gpu-admin.php
+msgid "Advanced"
+msgstr "پیشرفته"
+
+#: includes/class-gpu-admin.php
+msgid "General Settings"
+msgstr "تنظیمات عمومی"
+
+#: includes/class-gpu-admin.php
+msgid "Enable Plugin"
+msgstr "فعال‌سازی افزونه"
+
+#: includes/class-gpu-admin.php
+msgid "Enable gold price auto-update"
+msgstr "فعال‌سازی بروزرسانی خودکار قیمت طلا"
+
+#: includes/class-gpu-admin.php
+msgid "Price Mode"
+msgstr "حالت قیمت"
+
+#: includes/class-gpu-admin.php
+msgid "API only"
+msgstr "فقط API"
+
+#: includes/class-gpu-admin.php
+msgid "Manual only"
+msgstr "فقط دستی"
+
+#: includes/class-gpu-admin.php
+msgid "API with fallback to manual (Recommended)"
+msgstr "API با بازگشت به حالت دستی (توصیه شده)"
+
+#: includes/class-gpu-admin.php
+msgid "How the gold price is determined."
+msgstr "نحوه تعیین قیمت طلا."
+
+#: includes/class-gpu-admin.php
+msgid "Manual Price"
+msgstr "قیمت دستی"
+
+#: includes/class-gpu-admin.php
+msgid "Used in manual mode or as fallback when API fails."
+msgstr "در حالت دستی یا به عنوان بازگشت در صورت خرابی API استفاده می‌شود."
+
+#: includes/class-gpu-admin.php
+msgid "Price Buffer"
+msgstr "بافر قیمت"
+
+#: includes/class-gpu-admin.php
+msgid "Added to the gold price before product calculation."
+msgstr "قبل از محاسبه محصول به قیمت طلا اضافه می‌شود."
+
+#: includes/class-gpu-admin.php
+msgid "Gold Karat"
+msgstr "عیار طلا"
+
+#: includes/class-gpu-admin.php
+msgid "Target Currency"
+msgstr "ارز مقصد"
+
+#: includes/class-gpu-admin.php
+msgid "Max Price Change %"
+msgstr "حداکثر تغییر قیمت %"
+
+#: includes/class-gpu-admin.php
+msgid "0 = disabled. Blocks sync if price changes more than this."
+msgstr "0 = غیرفعال. اگر قیمت بیشتر از این مقدار تغییر کند، بروزرسانی متوقف می‌شود."
+
+#: includes/class-gpu-admin.php
+msgid "Sale Price Behavior"
+msgstr "رفتار قیمت حراج"
+
+#: includes/class-gpu-admin.php
+msgid "Update regular price only"
+msgstr "فقط قیمت عادی را بروزرسانی کن"
+
+#: includes/class-gpu-admin.php
+msgid "Skip products with active sale"
+msgstr "محصولات دارای حراج فعال را رد کن"
+
+#: includes/class-gpu-admin.php
+msgid "Pricing Formula"
+msgstr "فرمول قیمت‌گذاری"
+
+#: includes/class-gpu-admin.php
+msgid "Making Charge %"
+msgstr "اجرت ساخت %"
+
+#: includes/class-gpu-admin.php
+msgid "Labor cost percentage applied to gold value."
+msgstr "درصد هزینه ساخت روی ارزش طلا اعمال می‌شود."
+
+#: includes/class-gpu-admin.php
+msgid "Seller Profit %"
+msgstr "سود فروشنده %"
+
+#: includes/class-gpu-admin.php
+msgid "Applied to (gold value + making charge)."
+msgstr "روی (ارزش طلا + اجرت ساخت) اعمال می‌شود."
+
+#: includes/class-gpu-admin.php
+msgid "VAT %"
+msgstr "مالیات بر ارزش افزوده %"
+
+#: includes/class-gpu-admin.php
+msgid "Applied to making charge only."
+msgstr "فقط روی اجرت ساخت اعمال می‌شود."
+
+#: includes/class-gpu-admin.php
+msgid "Rounding Mode"
+msgstr "حالت گرد کردن"
+
+#: includes/class-gpu-admin.php
+msgid "None"
+msgstr "بدون"
+
+#: includes/class-gpu-admin.php
+msgid "Nearest"
+msgstr "نزدیک‌ترین"
+
+#: includes/class-gpu-admin.php
+msgid "Round Up"
+msgstr "گرد کردن به بالا"
+
+#: includes/class-gpu-admin.php
+msgid "Round Down"
+msgstr "گرد کردن به پایین"
+
+#: includes/class-gpu-admin.php
+msgid "e.g. step 1000 rounds to nearest/next 1,000."
+msgstr "مثال: مرحله ۱۰۰۰ قیمت را به نزدیک‌ترین/بعدی ۱,۰۰۰ گرد می‌کند."
+
+#: includes/class-gpu-admin.php
+msgid "Price Decimals"
+msgstr "اعشار قیمت"
+
+#: includes/class-gpu-admin.php
+msgid "API Configuration"
+msgstr "تنظیمات API"
+
+#: includes/class-gpu-admin.php
+msgid "Provider"
+msgstr "ارائه‌دهنده"
+
+#: includes/class-gpu-admin.php
+msgid "Select a preset or choose Custom."
+msgstr "یک الگو انتخاب کنید یا سفارشی را انتخاب کنید."
+
+#: includes/class-gpu-admin.php
+msgid "API URL"
+msgstr "آدرس API"
+
+#: includes/class-gpu-admin.php
+msgid "Auth Method"
+msgstr "روش احراز هویت"
+
+#: includes/class-gpu-admin.php
+msgid "None"
+msgstr "بدون"
+
+#: includes/class-gpu-admin.php
+msgid "API Key Header"
+msgstr "هدر کلید API"
+
+#: includes/class-gpu-admin.php
+msgid "Bearer Token"
+msgstr "توکن Bearer"
+
+#: includes/class-gpu-admin.php
+msgid "Query String"
+msgstr "رشته پرسش"
+
+#: includes/class-gpu-admin.php
+msgid "Basic Auth"
+msgstr "احراز هویت پایه"
+
+#: includes/class-gpu-admin.php
+msgid "API Key"
+msgstr "کلید API"
+
+#: includes/class-gpu-admin.php
+msgid "API Secret"
+msgstr "رمز API"
+
+#: includes/class-gpu-admin.php
+msgid "Request Method"
+msgstr "روش درخواست"
+
+#: includes/class-gpu-admin.php
+msgid "JSON Path"
+msgstr "مسیر JSON"
+
+#: includes/class-gpu-admin.php
+msgid "Dot notation to extract price from JSON response."
+msgstr "نقطه‌گذاری برای استخراج قیمت از پاسخ JSON."
+
+#: includes/class-gpu-admin.php
+msgid "Price Unit"
+msgstr "واحد قیمت"
+
+#: includes/class-gpu-admin.php
+msgid "API Currency"
+msgstr "ارز API"
+
+#: includes/class-gpu-admin.php
+msgid "Timeout (seconds)"
+msgstr "زمان انتظار (ثانیه)"
+
+#: includes/class-gpu-admin.php
+msgid "Test API Connection"
+msgstr "تست اتصال API"
+
+#: includes/class-gpu-admin.php
+msgid "Sync Settings"
+msgstr "تنظیمات بروزرسانی"
+
+#: includes/class-gpu-admin.php
+msgid "Update Interval"
+msgstr "فاصله بروزرسانی"
+
+#: includes/class-gpu-admin.php
+msgid "Seconds between automatic syncs (min 60)."
+msgstr "ثانیه بین بروزرسانی‌های خودکار (حداقل ۶۰)."
+
+#: includes/class-gpu-admin.php
+msgid "Batch Size"
+msgstr "اندازه دسته"
+
+#: includes/class-gpu-admin.php
+msgid "Products processed per queue tick."
+msgstr "محصولات پردازش شده در هر نوبت صف."
+
+#: includes/class-gpu-admin.php
+msgid "Retry Count"
+msgstr "تعداد تلاش مجدد"
+
+#: includes/class-gpu-admin.php
+msgid "Retry Delay"
+msgstr "تأخیر تلاش مجدد"
+
+#: includes/class-gpu-admin.php
+msgid "Seconds between retry attempts."
+msgstr "ثانیه بین تلاش‌های مجدد."
+
+#: includes/class-gpu-admin.php
+msgid "Lock Timeout"
+msgstr "زمان انتظار قفل"
+
+#: includes/class-gpu-admin.php
+msgid "Prevents concurrent syncs."
+msgstr "از بروزرسانی‌های همزمان جلوگیری می‌کند."
+
+#: includes/class-gpu-admin.php
+msgid "Advanced Settings"
+msgstr "تنظیمات پیشرفته"
+
+#: includes/class-gpu-admin.php
+msgid "Debug Mode"
+msgstr "حالت اشکال‌زدایی"
+
+#: includes/class-gpu-admin.php
+msgid "Show response details in logs"
+msgstr "نمایش جزئیات پاسخ در گزارش‌ها"
+
+#: includes/class-gpu-admin.php
+msgid "Logging"
+msgstr "گزارش‌گیری"
+
+#: includes/class-gpu-admin.php
+msgid "Enable activity logging"
+msgstr "فعال‌سازی گزارش‌گیری فعالیت"
+
+#: includes/class-gpu-admin.php
+msgid "Log Retention"
+msgstr "نگهداری گزارش"
+
+#: includes/class-gpu-admin.php
+msgid "Days to keep log entries."
+msgstr "روزهای نگهداری ورودی‌های گزارش."
+
+#: includes/class-gpu-admin.php
+msgid "Email on Failure"
+msgstr "ایمیل در صورت خطا"
+
+#: includes/class-gpu-admin.php
+msgid "Send email after repeated sync failures"
+msgstr "ارسال ایمیل پس از خرابی‌های مکرر بروزرسانی"
+
+#: includes/class-gpu-admin.php
+msgid "Email Recipient"
+msgstr "گیرنده ایمیل"
+
+#: includes/class-gpu-admin.php
+msgid "GitHub Repo"
+msgstr "مخزن GitHub"
+
+#: includes/class-gpu-admin.php
+msgid "For automatic plugin updates."
+msgstr "برای بروزرسانی خودکار افزونه."
+
+#: includes/class-gpu-admin.php
+msgid "Save Settings"
+msgstr "ذخیره تنظیمات"
+
+#: includes/class-gpu-admin.php
+msgid "Sync History"
+msgstr "تاریخچه بروزرسانی"
+
+#: includes/class-gpu-admin.php
+msgid "Time"
+msgstr "زمان"
+
+#: includes/class-gpu-admin.php
+msgid "Source"
+msgstr "منبع"
+
+#: includes/class-gpu-admin.php
+msgid "Gold Price"
+msgstr "قیمت طلا"
+
+#: includes/class-gpu-admin.php
+msgid "Effective"
+msgstr "نهایی"
+
+#: includes/class-gpu-admin.php
+msgid "Products"
+msgstr "محصولات"
+
+#: includes/class-gpu-admin.php
+msgid "Status"
+msgstr "وضعیت"
+
+#: includes/class-gpu-admin.php
+msgid "Recent Logs"
+msgstr "گزارش‌های اخیر"
+
+#: includes/class-gpu-admin.php
+msgid "Level"
+msgstr "سطح"
+
+#: includes/class-gpu-admin.php
+msgid "Event"
+msgstr "رویداد"
+
+#: includes/class-gpu-admin.php
+msgid "Message"
+msgstr "پیام"
+
+#: includes/class-gpu-admin.php
+msgid "Settings saved."
+msgstr "تنظیمات ذخیره شد."
+
+#: includes/class-gpu-admin.php
+msgid "Connected. Current price: %s"
+msgstr "اتصال برقرار شد. قیمت فعلی: %s"
+
+#: includes/class-gpu-admin.php
+msgid "Connection failed: %1$s (HTTP %2$d)"
+msgstr "اتصال ناموفق: %1$s (HTTP %2$d)"
+
+#: includes/class-gpu-admin.php
+msgid "Another sync is already running."
+msgstr "یک بروزرسانی دیگر در حال اجرا است."
+
+#: includes/class-gpu-admin.php
+msgid "Sync started — %d product(s) queued."
+msgstr "بروزرسانی شروع شد — %d محصول در صف قرار گرفت."
+
+#: includes/class-gpu-admin.php
+msgid "Sync failure"
+msgstr "خرابی بروزرسانی"
+
+#: includes/class-gpu-admin.php
+msgid "Gold price sync failed on %1$s:\n\n%2$s\n\nThe last valid price is still active; products were not changed."
+msgstr "بروزرسانی قیمت طلا ناموفق بود در %1$s:\n\n%2$s\n\nآخرین قیمت معتبر هنوز فعال است؛ محصولات تغییر نکردند."
+
+#: includes/class-gpu-admin.php
+msgid "API failed: %s"
+msgstr "API ناموفق: %s"
+
+#: includes/class-gpu-admin.php
+msgid "Gold price changed by %2$s%% (to %1$s) — above the allowed maximum. Products were NOT updated; adjust the limit or use \"Force sync\"."
+msgstr "قیمت طلا به میزان %2$s%% تغییر کرد (به %1$s) — بیش از حداکثر مجاز. محصولات بروزرسانی نشدند؛ حد را تنظیم کنید یا از \"بروزرسانی اجباری\" استفاده کنید."
+
+#: includes/class-gpu-admin.php
+msgid "Manual mode is on but the manual price is not set."
+msgstr "حالت دستی فعال است اما قیمت دستی تنظیم نشده."
+
+#: includes/class-gpu-admin.php
+msgid "API failed — manual price used for this sync."
+msgstr "API ناموفق — قیمت دستی برای این بروزرسانی استفاده شد."
+
+#: includes/class-gpu-admin.php
+msgid "Scheduling retry (attempt %d of %d)."
+msgstr "زمان‌بندی تلاش مجدد (تلاش %d از %d)."
+
+#: includes/class-gpu-admin.php
+msgid "Permission denied."
+msgstr "دسترسی رد شد."
+
+#: views/dashboard.php
+msgid "v"
+msgstr "نسخه"
+
+#: views/dashboard.php
+msgid "Sync Now"
+msgstr "بروزرسانی کن"
+
+#: views/dashboard.php
+msgid "Force Sync"
+msgstr "بروزرسانی اجباری"
+
+#: views/dashboard.php
+msgid "Gold Price (18K)"
+msgstr "قیمت طلا (۱۸ عیار)"
+
+#: views/dashboard.php
+msgid "Live from API"
+msgstr "زنده از API"
+
+#: views/dashboard.php
+msgid "Not connected"
+msgstr "اتصال برقرار نیست"
+
+#: views/dashboard.php
+msgid "Effective Price"
+msgstr "قیمت نهایی"
+
+#: views/dashboard.php
+msgid "buffer"
+msgstr "بافر"
+
+#: views/dashboard.php
+msgid "API Status"
+msgstr "وضعیت API"
+
+#: views/dashboard.php
+msgid "Connected"
+msgstr "متصل"
+
+#: views/dashboard.php
+msgid "Disconnected"
+msgstr "قطع شده"
+
+#: views/dashboard.php
+msgid "Last Sync"
+msgstr "آخرین بروزرسانی"
+
+#: views/dashboard.php
+msgid "Never synced"
+msgstr "هنوز بروزرسانی نشده"
+
+#: views/dashboard.php
+msgid "All good"
+msgstr "همه چیز خوب است"
+
+#: views/dashboard.php
+msgid "Product Update Progress"
+msgstr "پیشرفت بروزرسانی محصولات"
+
+#: views/dashboard.php
+msgid "Updated"
+msgstr "بروزرسانی شده"
+
+#: views/dashboard.php
+msgid "Skipped"
+msgstr "رد شده"
+
+#: views/dashboard.php
+msgid "Errors"
+msgstr "خطاها"
+
+#: views/dashboard.php
+msgid "Pending"
+msgstr "در انتظار"
+
+#: views/dashboard.php
+msgid "General"
+msgstr "عمومی"
+
+#: views/dashboard.php
+msgid "Pricing"
+msgstr "قیمت‌گذاری"
+
+#: views/dashboard.php
+msgid "API"
+msgstr "API"
+
+#: views/dashboard.php
+msgid "Sync"
+msgstr "بروزرسانی"
+
+#: views/dashboard.php
+msgid "Advanced"
+msgstr "پیشرفته"
+
+#: views/dashboard.php
+msgid "General Settings"
+msgstr "تنظیمات عمومی"
+
+#: views/dashboard.php
+msgid "Enable Plugin"
+msgstr "فعال‌سازی افزونه"
+
+#: views/dashboard.php
+msgid "Enable gold price auto-update"
+msgstr "فعال‌سازی بروزرسانی خودکار قیمت طلا"
+
+#: views/dashboard.php
+msgid "Price Mode"
+msgstr "حالت قیمت"
+
+#: views/dashboard.php
+msgid "API only"
+msgstr "فقط API"
+
+#: views/dashboard.php
+msgid "Manual only"
+msgstr "فقط دستی"
+
+#: views/dashboard.php
+msgid "API with fallback to manual (Recommended)"
+msgstr "API با بازگشت به حالت دستی (توصیه شده)"
+
+#: views/dashboard.php
+msgid "How the gold price is determined."
+msgstr "نحوه تعیین قیمت طلا."
+
+#: views/dashboard.php
+msgid "Manual Price"
+msgstr "قیمت دستی"
+
+#: views/dashboard.php
+msgid "Used in manual mode or as fallback when API fails."
+msgstr "در حالت دستی یا به عنوان بازگشت در صورت خرابی API استفاده می‌شود."
+
+#: views/dashboard.php
+msgid "Price Buffer"
+msgstr "بافر قیمت"
+
+#: views/dashboard.php
+msgid "Added to the gold price before product calculation."
+msgstr "قبل از محاسبه محصول به قیمت طلا اضافه می‌شود."
+
+#: views/dashboard.php
+msgid "Gold Karat"
+msgstr "عیار طلا"
+
+#: views/dashboard.php
+msgid "Target Currency"
+msgstr "ارز مقصد"
+
+#: views/dashboard.php
+msgid "Max Price Change %"
+msgstr "حداکثر تغییر قیمت %"
+
+#: views/dashboard.php
+msgid "0 = disabled. Blocks sync if price changes more than this."
+msgstr "0 = غیرفعال. اگر قیمت بیشتر از این مقدار تغییر کند، بروزرسانی متوقف می‌شود."
+
+#: views/dashboard.php
+msgid "Sale Price Behavior"
+msgstr "رفتار قیمت حراج"
+
+#: views/dashboard.php
+msgid "Update regular price only"
+msgstr "فقط قیمت عادی را بروزرسانی کن"
+
+#: views/dashboard.php
+msgid "Skip products with active sale"
+msgstr "محصولات دارای حراج فعال را رد کن"
+
+#: views/dashboard.php
+msgid "Pricing Formula"
+msgstr "فرمول قیمت‌گذاری"
+
+#: views/dashboard.php
+msgid "Making Charge %"
+msgstr "اجرت ساخت %"
+
+#: views/dashboard.php
+msgid "Labor cost percentage applied to gold value."
+msgstr "درصد هزینه ساخت روی ارزش طلا اعمال می‌شود."
+
+#: views/dashboard.php
+msgid "Seller Profit %"
+msgstr "سود فروشنده %"
+
+#: views/dashboard.php
+msgid "Applied to (gold value + making charge)."
+msgstr "روی (ارزش طلا + اجرت ساخت) اعمال می‌شود."
+
+#: views/dashboard.php
+msgid "VAT %"
+msgstr "مالیات بر ارزش افزوده %"
+
+#: views/dashboard.php
+msgid "Applied to making charge only."
+msgstr "فقط روی اجرت ساخت اعمال می‌شود."
+
+#: views/dashboard.php
+msgid "Rounding Mode"
+msgstr "حالت گرد کردن"
+
+#: views/dashboard.php
+msgid "None"
+msgstr "بدون"
+
+#: views/dashboard.php
+msgid "Nearest"
+msgstr "نزدیک‌ترین"
+
+#: views/dashboard.php
+msgid "Round Up"
+msgstr "گرد کردن به بالا"
+
+#: views/dashboard.php
+msgid "Round Down"
+msgstr "گرد کردن به پایین"
+
+#: views/dashboard.php
+msgid "e.g. step 1000 rounds to nearest/next 1,000."
+msgstr "مثال: مرحله ۱۰۰۰ قیمت را به نزدیک‌ترین/بعدی ۱,۰۰۰ گرد می‌کند."
+
+#: views/dashboard.php
+msgid "Price Decimals"
+msgstr "اعشار قیمت"
+
+#: views/dashboard.php
+msgid "API Configuration"
+msgstr "تنظیمات API"
+
+#: views/dashboard.php
+msgid "Provider"
+msgstr "ارائه‌دهنده"
+
+#: views/dashboard.php
+msgid "Select a preset or choose Custom."
+msgstr "یک الگو انتخاب کنید یا سفارشی را انتخاب کنید."
+
+#: views/dashboard.php
+msgid "API URL"
+msgstr "آدرس API"
+
+#: views/dashboard.php
+msgid "Auth Method"
+msgstr "روش احراز هویت"
+
+#: views/dashboard.php
+msgid "API Key"
+msgstr "کلید API"
+
+#: views/dashboard.php
+msgid "API Secret"
+msgstr "رمز API"
+
+#: views/dashboard.php
+msgid "Request Method"
+msgstr "روش درخواست"
+
+#: views/dashboard.php
+msgid "JSON Path"
+msgstr "مسیر JSON"
+
+#: views/dashboard.php
+msgid "Dot notation to extract price from JSON response."
+msgstr "نقطه‌گذاری برای استخراج قیمت از پاسخ JSON."
+
+#: views/dashboard.php
+msgid "Price Unit"
+msgstr "واحد قیمت"
+
+#: views/dashboard.php
+msgid "API Currency"
+msgstr "ارز API"
+
+#: views/dashboard.php
+msgid "Timeout (seconds)"
+msgstr "زمان انتظار (ثانیه)"
+
+#: views/dashboard.php
+msgid "Test API Connection"
+msgstr "تست اتصال API"
+
+#: views/dashboard.php
+msgid "Sync Settings"
+msgstr "تنظیمات بروزرسانی"
+
+#: views/dashboard.php
+msgid "Update Interval"
+msgstr "فاصله بروزرسانی"
+
+#: views/dashboard.php
+msgid "Seconds between automatic syncs (min 60)."
+msgstr "ثانیه بین بروزرسانی‌های خودکار (حداقل ۶۰)."
+
+#: views/dashboard.php
+msgid "Batch Size"
+msgstr "اندازه دسته"
+
+#: views/dashboard.php
+msgid "Products processed per queue tick."
+msgstr "محصولات پردازش شده در هر نوبت صف."
+
+#: views/dashboard.php
+msgid "Retry Count"
+msgstr "تعداد تلاش مجدد"
+
+#: views/dashboard.php
+msgid "Retry Delay"
+msgstr "تأخیر تلاش مجدد"
+
+#: views/dashboard.php
+msgid "Seconds between retry attempts."
+msgstr "ثانیه بین تلاش‌های مجدد."
+
+#: views/dashboard.php
+msgid "Lock Timeout"
+msgstr "زمان انتظار قفل"
+
+#: views/dashboard.php
+msgid "Prevents concurrent syncs."
+msgstr "از بروزرسانی‌های همزمان جلوگیری می‌کند."
+
+#: views/dashboard.php
+msgid "Advanced Settings"
+msgstr "تنظیمات پیشرفته"
+
+#: views/dashboard.php
+msgid "Debug Mode"
+msgstr "حالت اشکال‌زدایی"
+
+#: views/dashboard.php
+msgid "Show response details in logs"
+msgstr "نمایش جزئیات پاسخ در گزارش‌ها"
+
+#: views/dashboard.php
+msgid "Logging"
+msgstr "گزارش‌گیری"
+
+#: views/dashboard.php
+msgid "Enable activity logging"
+msgstr "فعال‌سازی گزارش‌گیری فعالیت"
+
+#: views/dashboard.php
+msgid "Log Retention"
+msgstr "نگهداری گزارش"
+
+#: views/dashboard.php
+msgid "Days to keep log entries."
+msgstr "روزهای نگهداری ورودی‌های گزارش."
+
+#: views/dashboard.php
+msgid "Email on Failure"
+msgstr "ایمیل در صورت خطا"
+
+#: views/dashboard.php
+msgid "Send email after repeated sync failures"
+msgstr "ارسال ایمیل پس از خرابی‌های مکرر بروزرسانی"
+
+#: views/dashboard.php
+msgid "Email Recipient"
+msgstr "گیرنده ایمیل"
+
+#: views/dashboard.php
+msgid "GitHub Repo"
+msgstr "مخزن GitHub"
+
+#: views/dashboard.php
+msgid "For automatic plugin updates."
+msgstr "برای بروزرسانی خودکار افزونه."
+
+#: views/dashboard.php
+msgid "Save Settings"
+msgstr "ذخیره تنظیمات"
+
+#: views/dashboard.php
+msgid "Sync History"
+msgstr "تاریخچه بروزرسانی"
+
+#: views/dashboard.php
+msgid "Time"
+msgstr "زمان"
+
+#: views/dashboard.php
+msgid "Source"
+msgstr "منبع"
+
+#: views/dashboard.php
+msgid "Gold Price"
+msgstr "قیمت طلا"
+
+#: views/dashboard.php
+msgid "Effective"
+msgstr "نهایی"
+
+#: views/dashboard.php
+msgid "Products"
+msgstr "محصولات"
+
+#: views/dashboard.php
+msgid "Status"
+msgstr "وضعیت"
+
+#: views/dashboard.php
+msgid "Recent Logs"
+msgstr "گزارش‌های اخیر"
+
+#: views/dashboard.php
+msgid "Level"
+msgstr "سطح"
+
+#: views/dashboard.php
+msgid "Event"
+msgstr "رویداد"
+
+#: views/dashboard.php
+msgid "Message"
+msgstr "پیام"

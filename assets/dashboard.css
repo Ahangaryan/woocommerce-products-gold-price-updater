@@ -1,0 +1,761 @@
+/* Gold Price Updater — Professional Dashboard Styles */
+/* ============================================================ */
+
+:root {
+    --gpu-primary: #1e3a5f;
+    --gpu-primary-light: #2d5a8e;
+    --gpu-accent: #f0b429;
+    --gpu-success: #28a745;
+    --gpu-danger: #dc3545;
+    --gpu-warning: #ffc107;
+    --gpu-info: #17a2b8;
+    --gpu-bg: #f8f9fa;
+    --gpu-card-bg: #ffffff;
+    --gpu-border: #e2e8f0;
+    --gpu-text: #2d3748;
+    --gpu-text-muted: #718096;
+    --gpu-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    --gpu-shadow-lg: 0 4px 12px rgba(0,0,0,0.12);
+    --gpu-radius: 12px;
+    --gpu-radius-sm: 8px;
+    --gpu-gap: 20px;
+    --gpu-gap-sm: 12px;
+    --gpu-gap-xs: 8px;
+    --gpu-spacing: 24px;
+}
+
+/* RTL Support */
+[dir="rtl"] .gpu-wrap {
+    text-align: right;
+}
+
+[dir="ltr"] .gpu-wrap {
+    text-align: left;
+}
+
+.gpu-wrap {
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 0 20px;
+    line-height: 1.6;
+}
+
+/* Header */
+.gpu-header {
+    background: linear-gradient(135deg, var(--gpu-primary) 0%, var(--gpu-primary-light) 100%);
+    color: white;
+    padding: var(--gpu-spacing) 32px;
+    border-radius: var(--gpu-radius);
+    margin-bottom: var(--gpu-gap);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--gpu-shadow-lg);
+    gap: var(--gpu-gap);
+}
+
+.gpu-header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+}
+
+.gpu-header h1 .gpu-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--gpu-accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.gpu-header .gpu-version {
+    font-size: 13px;
+    opacity: 0.8;
+    font-weight: 400;
+}
+
+.gpu-header-actions {
+    display: flex;
+    gap: var(--gpu-gap-sm);
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Status Cards Grid */
+.gpu-status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--gpu-gap);
+    margin-bottom: var(--gpu-gap);
+}
+
+.gpu-card {
+    background: var(--gpu-card-bg);
+    border-radius: var(--gpu-radius);
+    padding: var(--gpu-spacing);
+    box-shadow: var(--gpu-shadow);
+    border: 1px solid var(--gpu-border);
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.gpu-card:hover {
+    box-shadow: var(--gpu-shadow-lg);
+    transform: translateY(-2px);
+}
+
+.gpu-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gpu-primary);
+}
+
+.gpu-card.gpu-card-success::before { background: var(--gpu-success); }
+.gpu-card.gpu-card-danger::before { background: var(--gpu-danger); }
+.gpu-card.gpu-card-warning::before { background: var(--gpu-warning); }
+.gpu-card.gpu-card-info::before { background: var(--gpu-info); }
+
+.gpu-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.gpu-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gpu-text-muted);
+}
+
+.gpu-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    background: rgba(30, 58, 95, 0.1);
+    color: var(--gpu-primary);
+}
+
+.gpu-card-success .gpu-card-icon { background: rgba(40, 167, 69, 0.1); color: var(--gpu-success); }
+.gpu-card-danger .gpu-card-icon { background: rgba(220, 53, 69, 0.1); color: var(--gpu-danger); }
+
+.gpu-card-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--gpu-text);
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.gpu-card-meta {
+    font-size: 13px;
+    color: var(--gpu-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.gpu-card-meta .gpu-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gpu-success);
+    display: inline-block;
+}
+
+.gpu-card-meta .gpu-dot.gpu-dot-error { background: var(--gpu-danger); }
+.gpu-card-meta .gpu-dot.gpu-dot-warning { background: var(--gpu-warning); }
+
+/* Action Buttons */
+.gpu-actions {
+    display: flex;
+    gap: var(--gpu-gap-sm);
+    margin-bottom: var(--gpu-gap);
+    flex-wrap: wrap;
+}
+
+.gpu-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gpu-gap-xs);
+    padding: 12px 24px;
+    border-radius: var(--gpu-radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.gpu-btn-primary {
+    background: var(--gpu-primary);
+    color: white;
+}
+
+.gpu-btn-primary:hover {
+    background: var(--gpu-primary-light);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: var(--gpu-shadow-lg);
+}
+
+.gpu-btn-secondary {
+    background: white;
+    color: var(--gpu-text);
+    border: 1px solid var(--gpu-border);
+}
+
+.gpu-btn-secondary:hover {
+    background: var(--gpu-bg);
+    border-color: var(--gpu-primary);
+    color: var(--gpu-primary);
+}
+
+.gpu-btn-success {
+    background: var(--gpu-success);
+    color: white;
+}
+
+.gpu-btn-success:hover {
+    background: #218838;
+    color: white;
+}
+
+.gpu-btn-danger {
+    background: var(--gpu-danger);
+    color: white;
+}
+
+.gpu-btn-danger:hover {
+    background: #c82333;
+    color: white;
+}
+
+/* Progress Bar */
+.gpu-progress-section {
+    background: var(--gpu-card-bg);
+    border-radius: var(--gpu-radius);
+    padding: var(--gpu-spacing);
+    box-shadow: var(--gpu-shadow);
+    border: 1px solid var(--gpu-border);
+    margin-bottom: var(--gpu-gap);
+}
+
+.gpu-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.gpu-progress-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gpu-text);
+}
+
+.gpu-progress-stats {
+    font-size: 13px;
+    color: var(--gpu-text-muted);
+}
+
+.gpu-progress-bar {
+    background: #e9ecef;
+    border-radius: 100px;
+    height: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.gpu-progress-fill {
+    background: linear-gradient(90deg, var(--gpu-primary) 0%, var(--gpu-primary-light) 100%);
+    height: 100%;
+    border-radius: 100px;
+    transition: width 0.5s ease;
+    position: relative;
+}
+
+.gpu-progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+    animation: gpu-shine 2s infinite;
+}
+
+@keyframes gpu-shine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.gpu-progress-label {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--gpu-text-muted);
+    display: flex;
+    gap: var(--gpu-gap);
+    flex-wrap: wrap;
+}
+
+.gpu-progress-label span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Settings Sections */
+.gpu-settings-section {
+    background: var(--gpu-card-bg);
+    border-radius: var(--gpu-radius);
+    box-shadow: var(--gpu-shadow);
+    border: 1px solid var(--gpu-border);
+    margin-bottom: var(--gpu-gap);
+    overflow: hidden;
+}
+
+.gpu-section-header {
+    background: var(--gpu-bg);
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--gpu-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.gpu-section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gpu-text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.gpu-section-title .gpu-section-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    background: rgba(30, 58, 95, 0.1);
+    color: var(--gpu-primary);
+}
+
+.gpu-section-body {
+    padding: var(--gpu-spacing);
+}
+
+/* Form Styles */
+.gpu-form-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.gpu-form-table tr {
+    border-bottom: 1px solid var(--gpu-border);
+}
+
+.gpu-form-table tr:last-child {
+    border-bottom: none;
+}
+
+[dir="rtl"] .gpu-form-table th {
+    text-align: right;
+    padding: 16px 0 16px 24px;
+}
+
+[dir="ltr"] .gpu-form-table th {
+    text-align: left;
+    padding: 16px 24px 16px 0;
+}
+
+.gpu-form-table th {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gpu-text);
+    width: 280px;
+    vertical-align: top;
+}
+
+.gpu-form-table td {
+    padding: 16px 0;
+    vertical-align: top;
+}
+
+.gpu-form-table input[type="text"],
+.gpu-form-table input[type="url"],
+.gpu-form-table input[type="email"],
+.gpu-form-table input[type="number"],
+.gpu-form-table select {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 14px;
+    border: 1px solid var(--gpu-border);
+    border-radius: var(--gpu-radius-sm);
+    font-size: 14px;
+    color: var(--gpu-text);
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.gpu-form-table input:focus,
+.gpu-form-table select:focus {
+    outline: none;
+    border-color: var(--gpu-primary);
+    box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+}
+
+.gpu-form-table input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.gpu-form-table .description {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--gpu-text-muted);
+}
+
+.gpu-form-table .gpu-field-group {
+    display: flex;
+    gap: var(--gpu-gap-sm);
+    align-items: center;
+}
+
+.gpu-form-table .gpu-field-group input {
+    flex: 1;
+}
+
+/* Tables */
+.gpu-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--gpu-card-bg);
+    border-radius: var(--gpu-radius);
+    overflow: hidden;
+    box-shadow: var(--gpu-shadow);
+    border: 1px solid var(--gpu-border);
+}
+
+.gpu-table thead {
+    background: var(--gpu-bg);
+}
+
+.gpu-table th {
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gpu-text-muted);
+    border-bottom: 2px solid var(--gpu-border);
+}
+
+[dir="rtl"] .gpu-table th {
+    text-align: right;
+}
+
+.gpu-table td {
+    padding: 14px 16px;
+    font-size: 14px;
+    color: var(--gpu-text);
+    border-bottom: 1px solid var(--gpu-border);
+}
+
+.gpu-table tbody tr:hover {
+    background: rgba(30, 58, 95, 0.02);
+}
+
+.gpu-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Status Badges */
+.gpu-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.gpu-badge-success {
+    background: rgba(40, 167, 69, 0.1);
+    color: var(--gpu-success);
+}
+
+.gpu-badge-danger {
+    background: rgba(220, 53, 69, 0.1);
+    color: var(--gpu-danger);
+}
+
+.gpu-badge-warning {
+    background: rgba(255, 193, 7, 0.1);
+    color: #e6a800;
+}
+
+.gpu-badge-info {
+    background: rgba(23, 162, 184, 0.1);
+    color: var(--gpu-info);
+}
+
+.gpu-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+/* Tabs */
+.gpu-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--gpu-bg);
+    padding: 4px;
+    border-radius: var(--gpu-radius-sm);
+    margin-bottom: var(--gpu-gap);
+    width: fit-content;
+    flex-wrap: wrap;
+}
+
+.gpu-tab {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gpu-text-muted);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    background: transparent;
+}
+
+.gpu-tab:hover {
+    color: var(--gpu-text);
+    background: rgba(255,255,255,0.5);
+}
+
+.gpu-tab.active {
+    background: white;
+    color: var(--gpu-primary);
+    box-shadow: var(--gpu-shadow);
+}
+
+/* Notice */
+.gpu-notice {
+    padding: 16px 20px;
+    border-radius: var(--gpu-radius-sm);
+    margin-bottom: var(--gpu-gap);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+}
+
+.gpu-notice-success {
+    background: rgba(40, 167, 69, 0.1);
+    border: 1px solid rgba(40, 167, 69, 0.2);
+    color: var(--gpu-success);
+}
+
+.gpu-notice-error {
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.2);
+    color: var(--gpu-danger);
+}
+
+.gpu-notice-warning {
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.2);
+    color: #e6a800;
+}
+
+/* AraDev Footer */
+.gpu-footer {
+    background: var(--gpu-card-bg);
+    border-radius: var(--gpu-radius);
+    padding: 16px 24px;
+    box-shadow: var(--gpu-shadow);
+    border: 1px solid var(--gpu-border);
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--gpu-gap-sm);
+}
+
+.gpu-footer-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--gpu-text-muted);
+}
+
+.gpu-footer-logo {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--gpu-primary) 0%, var(--gpu-primary-light) 100%);
+    color: white;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.gpu-footer-content strong {
+    color: var(--gpu-primary);
+    font-weight: 600;
+}
+
+.gpu-footer-version {
+    background: var(--gpu-bg);
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-size: 11px;
+    color: var(--gpu-text-muted);
+}
+
+.gpu-footer-links a {
+    color: var(--gpu-primary);
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.gpu-footer-links a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .gpu-status-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .gpu-header {
+        flex-direction: column;
+        gap: var(--gpu-gap-sm);
+        text-align: center;
+    }
+    
+    .gpu-header-actions {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .gpu-status-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .gpu-actions {
+        flex-direction: column;
+    }
+    
+    .gpu-form-table th {
+        width: auto;
+        padding-bottom: 8px;
+    }
+    
+    .gpu-form-table input[type="text"],
+    .gpu-form-table input[type="url"],
+    .gpu-form-table input[type="email"],
+    .gpu-form-table input[type="number"],
+    .gpu-form-table select {
+        max-width: 100%;
+    }
+    
+    .gpu-tabs {
+        width: 100%;
+    }
+    
+    .gpu-tab {
+        flex: 1;
+        text-align: center;
+        padding: 10px 12px;
+    }
+}
+
+/* Animations */
+@keyframes gpu-fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.gpu-card {
+    animation: gpu-fadeIn 0.3s ease forwards;
+}
+
+.gpu-card:nth-child(1) { animation-delay: 0.1s; }
+.gpu-card:nth-child(2) { animation-delay: 0.15s; }
+.gpu-card:nth-child(3) { animation-delay: 0.2s; }
+.gpu-card:nth-child(4) { animation-delay: 0.25s; }
+
+/* RTL specific adjustments */
+[dir="rtl"] .gpu-card-header {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .gpu-progress-header {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .gpu-section-header {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .gpu-notice {
+    flex-direction: row-reverse;
+}
+
+/* Print styles */
+@media print {
+    .gpu-header,
+    .gpu-actions,
+    .gpu-progress-section,
+    .gpu-settings-section,
+    .gpu-footer {
+        display: none;
+    }
+    
+    .gpu-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}
