@@ -12,8 +12,11 @@ Elementor all consume it — none of them re-implement it.
 | gold_price | stored API price (per gram, target karat, site currency) |
 | buffer | setting `buffer` |
 | making_charge_pct | product meta → parent meta → `default_making_charge_pct` setting |
-| seller_profit_pct | setting `seller_profit_pct` (default 7) |
-| vat_pct | setting `vat_pct` (default 10) |
+| accessory_weight (grams, optional) | product meta → parent meta → 0 (`_gpu_accessory_weight`) |
+| stone_fee (optional, fixed) | product meta → parent meta → 0 (`_gpu_stone_fee`) |
+| include_accessory_in_making (optional) | product meta flag `_gpu_acc_in_making` on the managed (parent) product |
+| seller_profit_pct | product meta → parent meta → setting `seller_profit_pct` (default 7) |
+| vat_pct | product meta → parent meta → setting `vat_pct` (default 10) |
 | round_mode / round_step | settings (none / nearest / up / down) |
 | decimals | setting (default 2) |
 
@@ -21,12 +24,25 @@ Elementor all consume it — none of them re-implement it.
 
 ```
 effective_gold_price = gold_price + buffer
-raw_gold_value       = weight_g × effective_gold_price
-making_charge        = raw_gold_value × making_charge_pct / 100
+accessory_gold_value = accessory_weight × effective_gold_price
+raw_gold_value       = (weight_g + accessory_weight) × effective_gold_price
+making_charge        = making_base × making_charge_pct / 100
+                       (making_base = raw_gold_value, or the main gold value
+                        alone when include_accessory_in_making is off)
+stone_fee            = fixed, added as-is
 seller_profit        = (raw_gold_value + making_charge) × seller_profit_pct / 100
 vat                  = making_charge × vat_pct / 100      ← VAT applies to the making charge ONLY
-final_price          = raw_gold_value + making_charge + seller_profit + vat
+final_price          = raw_gold_value + making_charge + stone_fee + seller_profit + vat
 ```
+
+### Accessories (opt-in extras)
+
+- `accessory_weight` prices extra metal (stone setting, a second alloy) at the
+  same effective gold price — the customer pays for the metal.
+- The making charge % applies to the main gold value only by default; ticking
+  `include_accessory_in_making` extends labor to the accessory value too.
+- `stone_fee` is a fixed shop-currency amount added before profit/VAT, so it
+  never carries labor or VAT itself.
 
 ## Worked example (the spec's §64 input)
 

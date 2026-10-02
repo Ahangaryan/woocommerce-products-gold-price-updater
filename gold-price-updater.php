@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Gold Price Updater for WooCommerce
  * Description: Fetches the daily gold price from a configurable provider (presets included, incl. Price Intelligence Engine), validates it, applies a buffer, and recalculates every managed product with a dedicated pricing engine (making charge, seller profit, VAT on making charge only). Batch/queue processing, locking, retries, manual override, logs, sync history, Elementor dynamic tags and GitHub release updates.
- * Version:     1.0.0
+ * Version:     1.2.0
  * Author:      Hamid Ahangaryan
  * License:     GPL-2.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GPU_VERSION', '1.0.0' );
+define( 'GPU_VERSION', '1.2.0' );
 define( 'GPU_DB_VERSION', 1 );
 define( 'GPU_PLUGIN_FILE', __FILE__ );
 define( 'GPU_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );

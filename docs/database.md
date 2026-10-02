@@ -69,3 +69,8 @@ installs upgrade in place on the next admin request.
 |---|---|
 | `_gpu_managed` (`yes`) | parent product — the managed opt-in flag |
 | `_gpu_making_charge_pct` | product or variation — making charge override |
+| `_gpu_accessory_weight` | product or variation — accessory weight (grams, priced at the effective gold price) |
+| `_gpu_stone_fee` | product or variation — fixed stone/accessory fee added to the final price |
+| `_gpu_acc_in_making` (`yes`) | managed (parent) product — making charge % also applies to the accessory gold value |
+| `_gpu_seller_profit_pct` | product or variation — seller profit % override (empty = plugin default) |
+| `_gpu_vat_pct` | product or variation — VAT % override (empty = plugin default) |

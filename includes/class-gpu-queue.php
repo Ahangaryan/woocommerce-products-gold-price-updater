@@ -55,23 +55,38 @@ final class GPU_Queue {
 			// Add variations for variable parents.
 			$ids = array_merge( $ids, GPU_Products::variation_ids( $parents ) );
 			$offset += $batch;
-		} while ( count( $parents ) === $batch );
+		} while ( count( $parents ) === $batch );		foreach ( array_chunk( $ids, 200 ) as $chunk ) {
+			$values     = array();
+			$placeholders = array();
 
-		foreach ( $ids as $id ) {
+			foreach ( $chunk as $id ) {
+				$values[]        = (int) $sync_id;
+				$values[]        = (int) $id;
+				$values[]        = 'pending';
+				$placeholders[] = '(%d, %d, %s)';
+			}
+
+			// One multi-row INSERT per 200 products instead of one query per product.
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery
-			$wpdb->insert(
-				$table,
-				array(
-					'sync_id'    => (int) $sync_id,			'product_id' => (int) $id,
-			'status'     => 'pending',
-		),
-		array( '%d', '%d', '%s' )
+			$wpdb->query(
+				$wpdb->prepare(
+					'INSERT INTO ' . $table . ' (sync_id, product_id, status) VALUES ' . implode( ', ', $placeholders ), // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+					$values
+				)
+			);
+		}
+
+		// Arm the request-level frontload signal so the very next page view
+		// starts draining this queue even if WP-Cron is slow.
+		GPU_Settings::state_save(
+			array(
+				'queue_total'        => count( $ids ),
+				'queue_pending'      => count( $ids ),
+				'queue_frontload_at' => time(),
+			)
 		);
-	}
 
-		GPU_Settings::state_save( array( 'queue_total' => count( $ids ) ) );
-
-		return count( $ids);
+		return count( $ids );
 	}
 
 	/**
@@ -190,10 +205,10 @@ final class GPU_Queue {
 				$processed++;
 			}
 
-			// More work? Reschedule immediately (1s) to keep the pipeline moving.
+			// More work? Reschedule immediately (5s) to keep the pipeline moving.
 			$remaining = self::counts();
 			if ( $remaining['pending'] > 0 || $remaining['processing'] > 0 ) {
-				self::schedule_next( 1 );
+				self::schedule_next( 5 );
 			}
 		} finally {
 			GPU_DB::release_lock();
@@ -222,13 +237,45 @@ final class GPU_Queue {
 	}
 
 	/**
+	 * Process the queue through bounded ticks until it drains.
+	 *
+	 * Used by the sync pipeline right after a price change: each tick keeps
+	 * the lock, processes one batch, reschedules, and re-acquires — the loop
+	 * only stops when the queue is empty, the time budget is spent, or the
+	 * lock is lost to another worker (whose ticks keep draining anyway).
+	 *
+	 * @param int $max_seconds Wall-clock budget in seconds (0 = unbounded).
+	 *
+	 * @return void
+	 */
+	public static function run_ticks( $max_seconds = 0 ) {
+		$start = microtime( true );
+
+		do {
+			$before = self::counts();
+			if ( $before['pending'] <= 0 && $before['processing'] <= 0 ) {
+				break;
+			}
+
+			self::tick();
+
+			$after = self::counts();
+			if ( $after['pending'] + $after['processing'] >= $before['pending'] + $before['processing']
+				&& $after['pending'] + $after['processing'] > 0 ) {
+				// No progress — another worker holds the lock; its ticks continue.
+				break;
+			}
+		} while ( $max_seconds <= 0 || ( microtime( true ) - $start ) < $max_seconds );
+	}
+
+	/**
 	 * (Re)schedule the queue-tick cron event.
 	 *
 	 * @param int $delay Seconds from now.
 	 *
 	 * @return void
 	 */
-	public static function schedule_next( $delay = 1 ) {
+	public static function schedule_next( $delay = 5 ) {
 		if ( null === wp_next_scheduled( self::CRON_HOOK ) ) {
 			wp_schedule_single_event( time() + $delay, self::CRON_HOOK );
 		}

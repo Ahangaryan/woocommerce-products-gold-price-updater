@@ -4,6 +4,126 @@ All notable changes to Gold Price Updater for WooCommerce are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] — 2026-09-28
+
+### Added
+- **Visible "Realtime Poller" status card on the dashboard**: shows whether
+  the poller is enabled, a live "next poll in …" countdown, and the outcome
+  of the last poll (price checked / failed + how many products were
+  repriced) — driven by new `last_realtime_*` state keys written by
+  `realtime_tick()`.
+- **Realtime gold-price polling** (`realtime_enabled`, on by default): a
+  dedicated high-frequency cron event (`gpu_realtime_cron`, custom schedule
+  `gpu_realtime`, interval 15s–3600s, default 60s) re-runs the whole sync
+  pipeline without the max-change guard, so product prices follow the live
+  market within seconds of a change instead of waiting up to a full sync
+  interval plus background batch time.
+
+### Changed
+- **Fast path on unchanged prices**: when a fetched price equals the stored
+  one, the sync only records state + a `no_change` history row and never
+  scans or touches products — this is what makes minute-level polling safe
+  and cheap ("if the price didn't change, nothing happens").
+- **Prices now apply in seconds, not minutes**: the sync pipeline
+  front-loads the queue — as many products as the request budget allows are
+  repriced inside the sync request itself; the remainder drains via
+  self-rescheduling `gpu_queue_tick` events (now 5s apart) and a new
+  request-level front-load that processes one batch per page view (frontend
+  included) whenever cron lags.
+- Queue fill uses one multi-row `INSERT` per 200 products instead of one
+  query per product.
+- The admin **Sync Now / Force Sync** handlers also front-load the queue, so
+  manual updates feel instant on small/medium catalogs.
+- Sync history now records a `no_change` status; new log events
+  `sync_no_change` / `realtime_retry`.
+
+### Fixed
+- **Decimal percents are no longer rounded on display**: the Product Fields
+  tag's raw-percent mode showed the stored number through the widget's
+  money "Decimals" control (default 0), turning 7.7 into 8. The raw number
+  is now always displayed exactly as stored (7.7, 8.25, …); the Decimals
+  control keeps affecting money-value display only. The pricing engine has
+  always calculated with the exact stored percent (BCMath) — this was a
+  display bug, not a calculation bug.
+
+### Notes
+- The realtime poller deliberately bypasses the max-change guard (live
+  market prices move legitimately); the regular `update_interval` sync keeps
+  the guard. The fast path relies on the pricing engine being deterministic
+  — documented as a "do not change" invariant in agent-handoff.md.
+
+## [1.1.0] — 2026-09-28
+
+### Added
+- **Every plugin field is now an Elementor dynamic tag** — four tags, all
+  sharing a new `GPU_Elem_Base`:
+  - `GPU_Elem_Price` (existing, extended): effective/API/buffer/manual price,
+    plus new **target karat** and **target currency** variants.
+  - `GPU_Elem_Product_Fields` (new): product weight, accessory weight, stone
+    fee, raw gold value, and the three percents (making charge / seller
+    profit / VAT) with **two display modes** — the raw stored number, or the
+    percent's computed money value (always consistent with the pricing
+    engine, so displayed components add up to the final price).
+  - `GPU_Elem_Product_Price` (new): the full per-product breakdown from the
+    pricing engine, including the **final price** — computed live with the
+    current effective gold price, read-only.
+  - `GPU_Elem_Updated` (existing, moved onto the base).
+- **Before / After / Fallback on every tag**: wrap any value with custom
+  text (e.g. « … » تومان) and show a fallback string when the field is
+  empty (before the first sync, missing weight, etc.). Elementor's own tag
+  fallback takes precedence when set; the plugin's wrapper fills otherwise.
+- Persian translations for all new tag UI strings.
+
+## [1.0.4] — 2026-09-26
+
+### Added
+- **Accessory weight (extras)**: per-product/variation `_gpu_accessory_weight`
+  meta (grams) is priced at the effective gold price and added to the raw gold
+  value — stone setting, second alloys, etc. Priced as metal only by default;
+  a per-product `_gpu_acc_in_making` flag extends the making charge % to the
+  accessory gold value too.
+- **Stone / accessory fee**: fixed `_gpu_stone_fee` meta added to the final
+  price (shop currency) — carries no making charge and no VAT.
+- **Per-product seller profit % and VAT % overrides** (`_gpu_seller_profit_pct`,
+  `_gpu_vat_pct`): product → parent → plugin default, mirroring the making
+  charge resolution chain.
+- Persian translations for the whole product meta box via `GPU_Translations`.
+
+### Fixed
+- **Product preview missed the new fields**: `assets/preview.js` only sent the
+  making charge, so the live breakdown ignored unsaved accessory weight, stone
+  fee and profit/VAT overrides. It now posts every field and shows accessory
+  gold value and stone fee in the result.
+- Docs updated (pricing-engine.md formula + inputs, database.md meta table,
+  agent-handoff.md formula/meta, usage.md product setup) — the pricing docs
+  had drifted from the engine after the accessory feature.
+
+## [1.0.3] — 2026-09-08
+
+### Fixed
+- **Elementor dynamic tags ignored their control values**: the "Date format"
+  field on the "Gold Price Last Update" tag (and the "Show" / "Decimals"
+  controls on the "Gold Price" tag) had no effect because `get_value()` read
+  from the `$options` argument, which Elementor never populates when rendering
+  tags. Values are now read from the tag settings via `$this->get_settings()`,
+  the same API Elementor's own tags use.
+
+## [1.0.2] — 2026-09-08
+
+### Added
+- New redesigned admin dashboard UI (cards, sections, badges, progress bar).
+
+### Fixed
+- **Times shown in server UTC instead of site-local time**: timestamps were
+  rendered with `date_i18n()`, which treats the passed Unix timestamp as
+  already-local and never applies the site timezone. Switched to `wp_date()`
+  (Last Sync card, sync history, log timestamps, Elementor "Gold Price Last
+  Update" tag) so times follow WordPress → Settings → General → Timezone.
+- **HTTP 401 on Test API with empty API key**: the connection test now
+  validates that an API key is set for header/bearer/basic auth before making
+  the request, and common HTTP errors (401/403/404/429) now include a hint
+  explaining the likely cause.
+
 ## [1.0.1] — 2026-09-03
 
 ### Fixed

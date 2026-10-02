@@ -1,76 +1,134 @@
-/* Gold Price Updater — dashboard: provider presets + progress polling. */
+/* Gold Price Updater — Dashboard JavaScript */
 (function () {
 	'use strict';
 
-	// --- Provider preset auto-fill ---
-	var providerSelect = document.querySelector('select[name="gpu_provider"]');
-	if (providerSelect && typeof gpuProviders !== 'undefined') {
+	// Wait for DOM
+	document.addEventListener('DOMContentLoaded', function () {
+		initTabs();
+		initProviderPreset();
+		initProgressPolling();
+		initSyncButton();
+	});
+
+	// --- Tab Switching ---
+	function initTabs() {
+		var tabs = document.querySelectorAll('.gpu-tab');
+		var tabContents = document.querySelectorAll('.gpu-tab-content');
+
+		if (!tabs.length || !tabContents.length) return;
+
+		tabs.forEach(function (tab) {
+			tab.addEventListener('click', function (e) {
+				e.preventDefault();
+				var tabName = this.getAttribute('data-tab');
+
+				// Update active tab
+				tabs.forEach(function (t) {
+					t.classList.remove('active');
+				});
+				this.classList.add('active');
+
+				// Show/hide content
+				tabContents.forEach(function (content) {
+					if (content.getAttribute('data-tab') === tabName) {
+						content.style.display = 'block';
+					} else {
+						content.style.display = 'none';
+					}
+				});
+			});
+		});
+
+		// Show first tab by default
+		if (tabContents.length > 0) {
+			tabContents[0].style.display = 'block';
+		}
+	}
+
+	// --- Provider Preset Auto-fill ---
+	function initProviderPreset() {
+		var providerSelect = document.querySelector('select[name="gpu_provider"]');
+		if (!providerSelect || typeof gpuProviders === 'undefined') return;
+
 		providerSelect.addEventListener('change', function () {
 			var key = this.value;
 			var preset = gpuProviders[key];
 			if (!preset) return;
-			// Only auto-fill empty fields — don't overwrite custom values.
-			var urlField = document.querySelector('input[name="gpu_api_url"]');
-			if (urlField && !urlField.value.trim()) {
-				urlField.value = preset.url || '';
-			}
-			var authField = document.querySelector('select[name="gpu_auth"]');
-			if (authField) {
-				authField.value = preset.auth || 'none';
-			}
-			var jsonField = document.querySelector('input[name="gpu_json_path"]');
-			if (jsonField && !jsonField.value.trim()) {
-				jsonField.value = preset.json_path || '';
-			}
-			var unitField = document.querySelector('select[name="gpu_price_unit"]');
-			if (unitField) {
-				unitField.value = preset.unit || 'gram_18k';
-			}
-			var curField = document.querySelector('select[name="gpu_api_currency"]');
-			if (curField) {
-				curField.value = preset.currency || 'IRR';
-			}			});
 
-		// Auto-fill on page load if provider is set but URL is empty.
-		var urlField = document.querySelector('input[name="gpu_api_url"]');
-		if (urlField && !urlField.value.trim() && providerSelect.value) {
-			providerSelect.dispatchEvent(new Event('change'));
+			// Auto-fill all fields from preset
+			var fields = {
+				'gpu_api_url': preset.url || '',
+				'gpu_json_path': preset.json_path || ''
+			};
+
+			var selects = {
+				'gpu_auth': preset.auth || 'none',
+				'gpu_price_unit': preset.unit || 'gram_18k',
+				'gpu_api_currency': preset.currency || 'IRR'
+			};
+
+			// Update text/url inputs
+			Object.keys(fields).forEach(function (name) {
+				var field = document.querySelector('input[name="' + name + '"]');
+				if (field) field.value = fields[name];
+			});
+
+			// Update selects
+			Object.keys(selects).forEach(function (name) {
+				var field = document.querySelector('select[name="' + name + '"]');
+				if (field) field.value = selects[name];
+			});
+		});
+	}
+
+	// --- Progress Polling ---
+	function initProgressPolling() {
+		var progressBar = document.getElementById('gpu-progress-bar');
+		var progressText = document.getElementById('gpu-progress-text');
+
+		if (!progressBar || !progressText || typeof gpuDash === 'undefined') return;
+
+		function renderProgress(data) {
+			progressBar.style.width = data.percent + '%';
+			var c = data.counts;
+			progressText.innerHTML =
+				'<span>✅ ' + c.updated + ' بروزرسانی</span>' +
+				'<span>⏭️ ' + c.skipped + ' رد شده</span>' +
+				'<span>❌ ' + c.error + ' خطا</span>' +
+				'<span>⏳ ' + c.pending + ' در انتظار</span>';
 		}
+
+		function pollProgress() {
+			var xhr = new XMLHttpRequest();
+			xhr.open('POST', gpuDash.ajaxUrl, true);
+			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+			xhr.onload = function () {
+				try {
+					var response = JSON.parse(xhr.responseText);
+					if (response.success) {
+						renderProgress(response.data);
+						setTimeout(pollProgress, response.data.running ? 2000 : 10000);
+						return;
+					}
+				} catch (e) { /* ignore */ }
+				setTimeout(pollProgress, 15000);
+			};
+			xhr.send('action=gpu_progress&nonce=' + encodeURIComponent(gpuDash.nonce));
+		}
+
+		pollProgress();
 	}
 
-	// --- Progress polling ---
-	var bar = document.getElementById('gpu-progress-bar');
-	var text = document.getElementById('gpu-progress-text');
-	if (!bar || !text || typeof gpuDash === 'undefined') {
-		return;
+	// --- Sync Button Loading State ---
+	function initSyncButton() {
+		var syncBtn = document.querySelector('.gpu-btn-success');
+		if (!syncBtn) return;
+
+		syncBtn.addEventListener('click', function () {
+			this.innerHTML = '⏳ در حال بروزرسانی...';
+			this.style.opacity = '0.7';
+			this.style.pointerEvents = 'none';
+		});
 	}
 
-	function render(data) {
-		bar.style.width = data.percent + '%';
-		var c = data.counts;
-		text.textContent = data.percent + '% — ' + c.updated + ' updated, ' + c.skipped + ' skipped, ' + c.error + ' errors, ' + c.pending + ' pending';
-	}
-
-	function poll() {
-		var request = new XMLHttpRequest();
-		request.open('POST', gpuDash.ajaxUrl, true);
-		request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-		request.onload = function () {
-			try {
-				var response = JSON.parse(request.responseText);
-				if (response.success) {
-					render(response.data);
-					// Keep polling while the queue is working.
-					setTimeout(poll, response.data.running ? 2000 : 10000);
-					return;
-				}
-			} catch (e) {
-				// Ignore malformed responses; retry on the next tick.
-			}
-			setTimeout(poll, 15000);
-		};
-		request.send('action=gpu_progress&nonce=' + encodeURIComponent(gpuDash.nonce));
-	}
-
-	poll();
 })();

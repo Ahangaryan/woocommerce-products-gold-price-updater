@@ -1,6 +1,9 @@
 <?php
 /**
- * Elementor dynamic tag: Gold Price (effective / api / buffer / manual / source).
+ * Elementor dynamic tag: Gold Price (effective / api / buffer / manual /
+ * source / karat / currency).
+ *
+ * Every output passes through the shared Before / After / Fallback wrapper.
  *
  * @package GoldPriceUpdater
  */
@@ -12,14 +15,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * @noinspection PhpUndefinedClassInspection
  */
-class GPU_Elem_Price extends \Elementor\Core\DynamicTags\Data_Tag {
+class GPU_Elem_Price extends GPU_Elem_Base {
 
 	public function get_name() {
 		return 'gpu_gold_price';
 	}
 
 	public function get_title() {
-		return __( 'Gold Price', 'gold-price-updater' );
+		return GPU_Translations::t( 'Gold Price' );
 	}
 
 	public function get_group() {
@@ -37,29 +40,33 @@ class GPU_Elem_Price extends \Elementor\Core\DynamicTags\Data_Tag {
 		$this->add_control(
 			'variant',
 			array(
-				'label'   => __( 'Show', 'gold-price-updater' ),
-				'type'    => \Elementor\Controls_Manager::SELECT,
-				'default' => 'effective',
-				'options' => array(
-					'effective' => __( 'Effective price (gold + buffer)', 'gold-price-updater' ),
-					'api'       => __( 'API price (base)', 'gold-price-updater' ),
-					'buffer'    => __( 'Buffer amount', 'gold-price-updater' ),
-					'manual'    => __( 'Manual price', 'gold-price-updater' ),
-					'source'    => __( 'Price source (api/manual/none)', 'gold-price-updater' ),
-				),
+			'label'   => GPU_Translations::e( 'Show' ),
+			'type'    => \Elementor\Controls_Manager::SELECT,
+			'default' => 'effective',
+			'options' => array(
+				'effective' => GPU_Translations::t( 'Effective price (gold + buffer)' ),
+				'api'       => GPU_Translations::t( 'API price (base)' ),
+				'buffer'    => GPU_Translations::t( 'Buffer amount' ),
+				'manual'    => GPU_Translations::t( 'Manual price' ),
+				'karat'     => GPU_Translations::t( 'Target karat label' ),
+				'currency'  => GPU_Translations::t( 'Target currency label' ),
+				'source'    => GPU_Translations::t( 'Price source (api/manual/none)' ),
+			),
 			)
 		);
 
 		$this->add_control(
 			'decimals',
 			array(
-				'label'   => __( 'Decimals', 'gold-price-updater' ),
+				'label'   => GPU_Translations::e( 'Decimals' ),
 				'type'    => \Elementor\Controls_Manager::NUMBER,
 				'default' => 0,
 				'min'     => 0,
 				'max'     => 4,
 			)
 		);
+
+		$this->register_wrapper_controls();
 	}
 
 	/**
@@ -68,31 +75,55 @@ class GPU_Elem_Price extends \Elementor\Core\DynamicTags\Data_Tag {
 	 * @return string
 	 */
 	public function get_value( array $options = array() ) {
-		$variant  = isset( $options['variant'] ) ? (string) $options['variant'] : 'effective';
-		$decimals = isset( $options['decimals'] ) ? (int) $options['decimals'] : 0;
+		/*
+		 * Elementor renders tags via get_content() with no arguments, so
+		 * $options is always empty. Control values live in the tag settings.
+		 */
+		$variant  = (string) $this->get_settings( 'variant' );
+		$decimals = (int) $this->get_settings( 'decimals' );
+
+		if ( isset( $options['variant'] ) ) {
+			$variant = (string) $options['variant'];
+		}
+
+		if ( isset( $options['decimals'] ) ) {
+			$decimals = (int) $options['decimals'];
+		}
+
+		if ( '' === $variant ) {
+			$variant = 'effective';
+		}
+
+		$decimals = max( 0, min( 4, $decimals ) );
 
 		switch ( $variant ) {
 			case 'api':
 				$price = GPU_Settings::state_get( 'api_price', null );
 
-				return null === $price ? '' : number_format_i18n( (float) $price, $decimals );
+				return $this->wrap( null === $price ? '' : number_format_i18n( (float) $price, $decimals ) );
 
 			case 'buffer':
-				return number_format_i18n( (float) GPU_Settings::get_setting( 'buffer', 0 ), $decimals );
+				return $this->wrap( number_format_i18n( (float) GPU_Settings::get_setting( 'buffer', 0 ), $decimals ) );
 
 			case 'manual':
-				return number_format_i18n( (float) GPU_Settings::get_setting( 'manual_price', 0 ), $decimals );
+				return $this->wrap( number_format_i18n( (float) GPU_Settings::get_setting( 'manual_price', 0 ), $decimals ) );
+
+			case 'karat':
+				return $this->wrap( (string) GPU_Settings::get_setting( 'karat', '18k' ) );
+
+			case 'currency':
+				return $this->wrap( (string) GPU_Settings::get_setting( 'target_currency', 'IRR' ) );
 
 			case 'source':
 				$source = GPU_Gold_Price_Service::current_with_source();
 
-				return (string) $source['source'];
+				return $this->wrap( (string) $source['source'] );
 
 			case 'effective':
 			default:
 				$price = GPU_Gold_Price_Service::effective_price();
 
-				return null === $price ? '' : number_format_i18n( $price, $decimals );
+				return $this->wrap( null === $price ? '' : number_format_i18n( $price, $decimals ) );
 		}
 	}
 }

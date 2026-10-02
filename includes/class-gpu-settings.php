@@ -52,6 +52,8 @@ final class GPU_Settings {
 
 			// ---- Sync ----------------------------------------------------
 			'update_interval'        => 900,            // seconds.
+			'realtime_enabled'       => 1,              // high-frequency polling (fast path skips work when the price is unchanged).
+			'realtime_interval'      => 60,             // seconds between realtime polls.
 			'batch_size'             => 50,
 			'retry_count'            => 2,
 			'retry_delay'            => 60,             // seconds between sync retries.

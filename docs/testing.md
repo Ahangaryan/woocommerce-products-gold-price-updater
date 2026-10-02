@@ -1,5 +1,19 @@
 # Testing
 
+## Elementor dynamic tags (smoke)
+
+`tests/smoke-elementor-tags.php` (inside the plugin, no PHPUnit needed):
+
+```bash
+php tests/smoke-elementor-tags.php   # exit 0 + ALL CHECKS PASSED
+```
+
+It stubs the minimal Elementor + WordPress surface, seeds settings and two
+fake products (a simple product and a variation), and asserts the rendered
+output of all four tags: gold-price variants, the before/after/fallback
+wrapper, the two percent display modes (raw number / money value), the price
+breakdown components, and variation → parent meta inheritance.
+
 ## What is covered today
 
 The plugin's **pure core** is unit-tested in the parent repo's PHPUnit suite

@@ -115,10 +115,22 @@ final class GPU_Api_Client {
 		if ( $code < 200 || $code >= 300 ) {
 			GPU_Logger::error( 'api_http_error', 'HTTP ' . $code, array( 'http_code' => $code ) );
 
+			// Provide a more helpful error message for common status codes.
+			$hint = '';
+			if ( 401 === $code ) {
+				$hint = ' — Invalid or missing API credentials. Check your API key and auth method.';
+			} elseif ( 403 === $code ) {
+				$hint = ' — Access denied. Your API key may not have permission for this endpoint.';
+			} elseif ( 404 === $code ) {
+				$hint = ' — Endpoint not found. Verify the API URL is correct.';
+			} elseif ( 429 === $code ) {
+				$hint = ' — Rate limit exceeded. Try again later.';
+			}
+
 			return array(
 				'ok'       => false,
 				'http_code' => $code,
-				'error'    => 'HTTP ' . $code,
+				'error'    => 'HTTP ' . $code . $hint,
 				'body'     => $body,
 			);
 		}

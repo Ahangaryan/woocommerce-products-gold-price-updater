@@ -22,6 +22,11 @@ final class GPU_Products {
 
 	const META_MANAGED        = '_gpu_managed';
 	const META_MAKING_CHARGE  = '_gpu_making_charge_pct';
+	const META_ACCESSORY_WEIGHT = '_gpu_accessory_weight';
+	const META_STONE_FEE        = '_gpu_stone_fee';
+	const META_ACC_IN_MAKING    = '_gpu_acc_in_making';
+	const META_SELLER_PROFIT    = '_gpu_seller_profit_pct';
+	const META_VAT              = '_gpu_vat_pct';
 
 	/** Weight units → grams (WooCommerce shop weight unit is normally one of these). */
 	const WEIGHT_TO_GRAM = array(
@@ -69,7 +74,18 @@ final class GPU_Products {
 
 		$mk_pct = self::making_charge_pct( $product_id, $managed_id );
 		if ( null === $mk_pct ) {
-			return array( 'status' => 'skippe' . 'd', 'reason' => 'invalid_making_charge' );
+			return array( 'status' => 'skipped', 'reason' => 'invalid_making_charge' );
+		}
+
+		// Per-product overrides (product → parent → settings); null = invalid stored override.
+		$profit_pct = self::seller_profit_pct( $product_id, $managed_id );
+		if ( null === $profit_pct ) {
+			return array( 'status' => 'skipped', 'reason' => 'invalid_seller_profit' );
+		}
+
+		$vat_pct = self::vat_pct( $product_id, $managed_id );
+		if ( null === $vat_pct ) {
+			return array( 'status' => 'skipped', 'reason' => 'invalid_vat_pct' );
 		}
 
 		// Sale price behavior.
@@ -84,13 +100,16 @@ final class GPU_Products {
 			$effective, // Engine adds buffer again? No — effective already includes it; pass 0 buffer.
 			0.0,
 			$mk_pct,
-			(float) ( $context['profit_pct'] ?? 0 ),
-			(float) ( $context['vat_pct'] ?? 0 ),
+			$profit_pct, // Resolved per product (override → parent → setting); context values are only a fallback.
+			$vat_pct,
 			array(
-				'decimals'          => (int) ( $context['decimals'] ?? 2 ),
-				'round_mode'        => (string) ( $context['round_mode'] ?? 'none' ),
-				'round_step'        => (float) ( $context['round_step'] ?? 0 ),
-				'currency_divisor'  => (float) ( $context['divisor'] ?? 1 ),
+				'decimals'                    => (int) ( $context['decimals'] ?? 2 ),
+				'round_mode'                  => (string) ( $context['round_mode'] ?? 'none' ),
+				'round_step'                  => (float) ( $context['round_step'] ?? 0 ),
+				'currency_divisor'            => (float) ( $context['divisor'] ?? 1 ),
+				'accessory_weight'            => self::accessory_weight( $product_id, $managed_id ),
+				'stone_fee'                   => self::stone_fee( $product_id, $managed_id ),
+				'include_accessory_in_making' => 'yes' === get_post_meta( $managed_id, self::META_ACC_IN_MAKING, true ),
 			)
 		);
 
@@ -127,6 +146,8 @@ final class GPU_Products {
 			'profit' => $result['seller_profit'],
 			'vat'    => $result['vat'],
 			'raw'    => $result['raw_gold_value'],
+			'stone'  => $result['stone_fee'],
+			'accessory_gold' => $result['accessory_gold_value'],
 		);
 	}
 
@@ -188,6 +209,122 @@ final class GPU_Products {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Accessory weight (grams): product meta → parent meta → 0.
+	 *
+	 * @param int $product_id
+	 * @param int $managed_id
+	 *
+	 * @return float
+	 */
+	public static function accessory_weight( $product_id, $managed_id = 0 ) {
+		$raw = get_post_meta( $product_id, self::META_ACCESSORY_WEIGHT, true );
+		if ( '' === $raw || null === $raw ) {
+			$raw = $managed_id && $managed_id !== $product_id
+				? get_post_meta( $managed_id, self::META_ACCESSORY_WEIGHT, true )
+				: '';
+		}
+
+		return ( is_numeric( $raw ) && (float) $raw > 0 ) ? (float) $raw : 0.0;
+	}
+
+	/**
+	 * Fixed stone/accessory fee: product meta → parent meta → 0.
+	 *
+	 * @param int $product_id
+	 * @param int $managed_id
+	 *
+	 * @return float
+	 */
+	public static function stone_fee( $product_id, $managed_id = 0 ) {
+		$raw = get_post_meta( $product_id, self::META_STONE_FEE, true );
+		if ( '' === $raw || null === $raw ) {
+			$raw = $managed_id && $managed_id !== $product_id
+				? get_post_meta( $managed_id, self::META_STONE_FEE, true )
+				: '';
+		}
+
+		return ( is_numeric( $raw ) && (float) $raw > 0 ) ? (float) $raw : 0.0;
+	}
+
+	/**
+	 * Seller profit percent: product override → parent override → default setting.
+	 *
+	 * @param int $product_id
+	 * @param int $managed_id
+	 *
+	 * @return float|null Null when a stored override is invalid.
+	 */
+	public static function seller_profit_pct( $product_id, $managed_id = 0 ) {
+		$raw = get_post_meta( $product_id, self::META_SELLER_PROFIT, true );
+		if ( '' === $raw || null === $raw ) {
+			$raw = $managed_id && $managed_id !== $product_id
+				? get_post_meta( $managed_id, self::META_SELLER_PROFIT, true )
+				: '';
+		}
+
+		if ( '' === $raw || null === $raw ) {
+			$raw = (string) GPU_Settings::get_setting( 'seller_profit_pct', 0.0 );
+		}
+
+		if ( ! is_numeric( $raw ) ) {
+			return null;
+		}
+
+		$value = (float) $raw;
+		if ( $value < 0 || $value > 100 ) {
+			return null;
+		}
+
+		return $value;
+	}
+
+	/**
+	 * VAT percent: product override → parent override → default setting.
+	 *
+	 * @param int $product_id
+	 * @param int $managed_id
+	 *
+	 * @return float|null Null when a stored override is invalid.
+	 */
+	public static function vat_pct( $product_id, $managed_id = 0 ) {
+		$raw = get_post_meta( $product_id, self::META_VAT, true );
+		if ( '' === $raw || null === $raw ) {
+			$raw = $managed_id && $managed_id !== $product_id
+				? get_post_meta( $managed_id, self::META_VAT, true )
+				: '';
+		}
+
+		if ( '' === $raw || null === $raw ) {
+			$raw = (string) GPU_Settings::get_setting( 'vat_pct', 0.0 );
+		}
+
+		if ( ! is_numeric( $raw ) ) {
+			return null;
+		}
+
+		$value = (float) $raw;
+		if ( $value < 0 || $value > 100 ) {
+			return null;
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Whether the making charge % also applies to the accessory gold value.
+	 *
+	 * @param int $product_id
+	 * @param int $managed_id
+	 *
+	 * @return bool
+	 */
+	public static function accessory_in_making( $product_id, $managed_id = 0 ) {
+		$flag = get_post_meta( $managed_id ? $managed_id : $product_id, self::META_ACC_IN_MAKING, true );
+
+		return 'yes' === $flag;
 	}
 
 	/**

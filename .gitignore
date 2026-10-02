@@ -1,0 +1,12 @@
+# OS junk
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Test artifacts
+test.db
+
+# IDE
+.idea/
+.vscode/
+*.swp

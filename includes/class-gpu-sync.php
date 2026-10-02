@@ -92,13 +92,32 @@ final class GPU_Sync {
 					)
 				);
 				return self::fail( $sync_id, 'Price-change guard tripped (+' . $pct . '%).', false );
-			}
+			}			// 3. Store the price and queue the product updates.
+			$previous_price = (float) GPU_Settings::state_get( 'api_price', 0 );
 
-			// 3. Store the price and queue the product updates.
 			GPU_Gold_Price_Service::store_api_price( $base_price );
 			GPU_Gold_Price_Service::record_success();
 
-			$queued = GPU_Queue::fill( $sync_id );
+			/*
+			 * Fast path: when the base price is byte-identical to the stored
+			 * one, every managed product would compute the exact same number
+			 * (the engine is deterministic) — so there is nothing to do beyond
+			 * bookkeeping. This is what makes high-frequency (realtime)
+			 * polling cheap: unchanged polls cost two option writes + one
+			 * history row, never a product scan.
+			 */
+			$price_changed = abs( $base_price - $previous_price ) >= 0.000001;
+
+			$queued = 0;
+			if ( ! $price_changed ) {
+				if ( $force ) {
+					// Forced sync: reprice everything even when the price did not move.
+					$queued        = GPU_Queue::fill( $sync_id );
+					$price_changed = $queued > 0;
+				}
+			} else {
+				$queued = GPU_Queue::fill( $sync_id );
+			}
 
 			GPU_DB::history_finish(
 				$sync_id,
@@ -107,16 +126,41 @@ final class GPU_Sync {
 					'buffer_amount'   => (float) GPU_Settings::get_setting( 'buffer', 0 ),
 					'effective_price' => $base_price + (float) GPU_Settings::get_setting( 'buffer', 0 ),
 					'products_total'  => $queued,
-					'status'          => 'queued',
-					'message'         => 'Queued ' . $queued . ' product(s) for background update.',
+					'status'          => $price_changed ? 'queued' : 'no_change',
+					'message'         => $price_changed
+						? 'Queued ' . $queued . ' product(s) for background update.'
+						: 'Gold price unchanged — product prices left as-is.',
 				)
 			);
 
-			GPU_Logger::info( 'sync_queued', 'Products queued', array( 'sync_id' => $sync_id, 'queued' => $queued ) );
+			GPU_Logger::info(
+				$price_changed ? 'sync_queued' : 'sync_no_change',
+				$price_changed ? 'Products queued' : 'Price unchanged — skipped product updates',
+				array( 'sync_id' => $sync_id, 'queued' => $queued )
+			);
 			if ( $used_manual_fallback ) {
 				GPU_Logger::warning( 'manual_fallback', 'API failed — manual price used for this sync.', array( 'sync_id' => $sync_id ) );
 			}
-			GPU_Logger::flush();			return array(
+			GPU_Logger::flush();
+
+			if ( ! $price_changed ) {
+				return array(
+					'ok'      => true,
+					'message' => __( 'Gold price unchanged — products already up to date.', 'gold-price-updater' ),
+					'sync_id' => $sync_id,
+					'queued'  => 0,
+				);
+			}
+
+			/*
+			 * Front-load the queue: process as much as possible inside THIS
+			 * request (we already hold the sync lock) so store-front prices
+			 * reflect the new gold price within seconds, then hand any
+			 * remainder to the scheduler.
+			 */
+			GPU_Queue::run_ticks( true );
+
+			return array(
 				'ok'      => true,
 				'message' => sprintf( __( 'Sync started — %d product(s) queued.', 'gold-price-updater' ), $queued ),
 				'sync_id' => $sync_id,
@@ -151,6 +195,45 @@ final class GPU_Sync {
 			} elseif ( $attempt === $max_retries + 1 ) {
 				// Retry budget just exhausted — notify once, not on every further failure.
 				self::notify_admin( $result['message'] );
+			}
+		}
+	}
+
+	/**
+	 * Realtime poll (high-frequency tick): fetch the price, store it when it
+	 * actually changed, and reprice the products immediately.
+	 *
+	 * Intentionally bypasses the max-change guard: the price source publishes
+	 * live market prices, so any movement is legitimate. Validation,
+	 * normalization and the "never store on failure" rule are identical to
+	 * the regular sync. Unchanged polls are nearly free (fast path in run()).
+	 *
+	 * @return void
+	 */
+	public static function realtime_tick() {
+		$settings = GPU_Settings::get();
+		if ( empty( $settings['enabled'] ) ) {
+			return;
+		}
+
+		$result = self::run( 'api' );
+
+		// Dashboard-visible health bookkeeping for the realtime poller.
+		GPU_Settings::state_save(
+			array(
+				'last_realtime_at'     => time(),
+				'last_realtime_result' => ! empty( $result['ok'] ) ? 'ok' : 'fail',
+				'last_realtime_queued' => max( 0, (int) ( $result['queued'] ?? 0 ) ),
+			)
+		);
+
+		if ( ! $result['ok'] && GPU_Gold_Price_Service::failure_count() > 0 ) {
+			$max_retries = max( 0, (int) $settings['retry_count'] );
+			$attempt     = GPU_Gold_Price_Service::failure_count();
+
+			if ( $attempt <= $max_retries ) {
+				wp_schedule_single_event( time() + max( 30, (int) $settings['retry_delay'] ), self::CRON_HOOK );
+				GPU_Logger::warning( 'realtime_retry', 'Scheduling retry', array( 'attempt' => $attempt, 'of' => $max_retries ) );
 			}
 		}
 	}

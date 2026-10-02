@@ -50,6 +50,12 @@ final class GPU_Admin {
 	 */
 	public static function assets( $hook ) {
 		if ( false !== strpos( (string) $hook, 'gpu-dashboard' ) ) {
+			wp_enqueue_style(
+				'gpu-dashboard',
+				GPU_PLUGIN_URL . 'assets/dashboard.css',
+				array(),
+				GPU_VERSION
+			);
 			wp_enqueue_script(
 				'gpu-dashboard',
 				GPU_PLUGIN_URL . 'assets/dashboard.js',
@@ -138,7 +144,21 @@ final class GPU_Admin {
 		}
 		check_admin_referer( 'gpu_test_api' );
 
-		$client = new GPU_Api_Client( GPU_Settings::get() );
+		$settings = GPU_Settings::get();
+		$auth     = (string) ( $settings['auth_method'] ?? 'none' );
+		$key      = trim( (string) ( $settings['api_key'] ?? '' ) );
+
+		// Validate credentials before making the request.
+		if ( in_array( $auth, array( 'header', 'bearer', 'basic' ), true ) && '' === $key ) {
+			GPU_Settings::set_api_status( false, 'Missing API key.', null, null );
+			$message = __(
+				'Connection failed: API key is required for this auth method. Please set your API key in the settings below.',
+				'gold-price-updater'
+			);
+			self::redirect( array( 'gpu_msg' => rawurlencode( $message ), 'gpu_type' => 'error' ) );
+		}
+
+		$client = new GPU_Api_Client( $settings );
 		$result = $client->test();
 
 		if ( $result['ok'] ) {
@@ -235,6 +255,7 @@ final class GPU_Admin {
 		$history   = GPU_DB::history_recent( 10 );
 		$logs      = GPU_Logger::recent( 30 );
 		$next_sync = wp_next_scheduled( GPU_Plugin::CRON_HOOK );
+		$next_realtime = ! empty( $settings['realtime_enabled'] ) ? wp_next_scheduled( GPU_Plugin::REALTIME_HOOK ) : false;
 
 		include GPU_PLUGIN_DIR . 'views/dashboard.php';
 	}
@@ -278,6 +299,8 @@ final class GPU_Admin {
 
 			// Sync.
 			'update_interval'  => max( 60, (int) ( $post['gpu_interval'] ?? 900 ) ),
+			'realtime_enabled' => empty( $post['gpu_realtime_enabled'] ) ? 0 : 1,
+			'realtime_interval' => max( 15, (int) ( $post['gpu_realtime_interval'] ?? 60 ) ),
 			'batch_size'       => max( 1, min( 500, (int) ( $post['gpu_batch'] ?? 50 ) ) ),
 			'retry_count'      => max( 0, min( 10, (int) ( $post['gpu_retries'] ?? 2 ) ) ),
 			'retry_delay'      => max( 30, (int) ( $post['gpu_retry_delay'] ?? 60 ) ),
