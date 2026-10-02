@@ -88,7 +88,7 @@ class GPU_Elem_Product_Price extends GPU_Elem_Base {
 		if ( 'effective_gold_price' === $component ) {
 			$price = GPU_Gold_Price_Service::effective_price();
 
-			return $this->wrap( null === $price ? '' : number_format_i18n( $price, $decimals ) );
+			return $this->wrap( null === $price ? '' : GPU_Formatter::number( $price, $decimals ) );
 		}
 
 		$product = $this->current_product();
@@ -143,6 +143,6 @@ class GPU_Elem_Product_Price extends GPU_Elem_Base {
 			return $this->wrap( '' );
 		}
 
-		return $this->wrap( number_format_i18n( $breakdown[ $component ], $decimals ) );
+		return $this->wrap( GPU_Formatter::number( $breakdown[ $component ], $decimals ) );
 	}
 }

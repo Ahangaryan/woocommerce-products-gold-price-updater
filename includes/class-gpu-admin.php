@@ -166,7 +166,7 @@ final class GPU_Admin {
 			$message = sprintf(
 				/* translators: %s: price */
 				__( 'Connected. Current price: %s', 'gold-price-updater' ),
-				number_format_i18n( (float) $result['price'] )
+				GPU_Formatter::number( (float) $result['price'] )
 			);
 		} else {
 			GPU_Settings::set_api_status( false, $result['error'] ?? 'Unknown error.', null, $result['http_code'] ?? null );
@@ -296,6 +296,8 @@ final class GPU_Admin {
 				: 'none',
 			'round_step'       => max( 0.0, (float) ( $post['gpu_round_step'] ?? 0 ) ),
 			'decimals'         => min( 6, max( 0, (int) ( $post['gpu_decimals'] ?? 2 ) ) ),
+			'thousand_sep'     => GPU_Formatter::sanitize_separator( $post['gpu_thousand_sep'] ?? '.', '.' ),
+			'decimal_sep'      => GPU_Formatter::sanitize_separator( $post['gpu_decimal_sep'] ?? ',', ',' ),
 
 			// Sync.
 			'update_interval'  => max( 60, (int) ( $post['gpu_interval'] ?? 900 ) ),

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Gold Price Updater for WooCommerce
  * Description: Fetches the daily gold price from a configurable provider (presets included, incl. Price Intelligence Engine), validates it, applies a buffer, and recalculates every managed product with a dedicated pricing engine (making charge, seller profit, VAT on making charge only). Batch/queue processing, locking, retries, manual override, logs, sync history, Elementor dynamic tags and GitHub release updates.
- * Version:     1.2.0
+ * Version:     1.3.0
  * Author:      Hamid Ahangaryan
  * License:     GPL-2.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GPU_VERSION', '1.2.0' );
+define( 'GPU_VERSION', '1.3.0' );
 define( 'GPU_DB_VERSION', 1 );
 define( 'GPU_PLUGIN_FILE', __FILE__ );
 define( 'GPU_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
@@ -30,6 +30,7 @@ require_once GPU_PLUGIN_DIR . 'includes/class-gpu-api-providers.php';
 require_once GPU_PLUGIN_DIR . 'includes/class-gpu-api-client.php';
 require_once GPU_PLUGIN_DIR . 'includes/class-gpu-gold-price-service.php';
 require_once GPU_PLUGIN_DIR . 'includes/class-gpu-settings.php';
+require_once GPU_PLUGIN_DIR . 'includes/class-gpu-formatter.php';
 require_once GPU_PLUGIN_DIR . 'includes/class-gpu-db.php';
 require_once GPU_PLUGIN_DIR . 'includes/class-gpu-sync.php';
 require_once GPU_PLUGIN_DIR . 'includes/class-gpu-queue.php';

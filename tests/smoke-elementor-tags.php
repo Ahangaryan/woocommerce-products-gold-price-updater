@@ -59,9 +59,6 @@ namespace {
 	function get_locale() {
 		return 'fa_IR';
 	}
-	function number_format_i18n( $number, $decimals = 0 ) {
-		return number_format( (float) $number, max( 0, (int) $decimals ), '.', ',' );
-	}
 	function esc_html( $text ) {
 		return $text;
 	}
@@ -176,6 +173,7 @@ namespace {
 	require GPU_PLUGIN_DIR . 'includes/class-gpu-pricing-engine.php';
 	require GPU_PLUGIN_DIR . 'includes/class-gpu-price-normalizer.php';
 	require GPU_PLUGIN_DIR . 'includes/class-gpu-settings.php';
+	require GPU_PLUGIN_DIR . 'includes/class-gpu-formatter.php';
 	require GPU_PLUGIN_DIR . 'includes/class-gpu-gold-price-service.php';
 	require GPU_PLUGIN_DIR . 'includes/class-gpu-products.php';
 	require GPU_PLUGIN_DIR . 'includes/class-gpu-translations.php';
@@ -232,13 +230,13 @@ namespace {
 
 	// ------------------------------------------------------- 1) Gold Price.
 	$tag = new GPU_Elem_Price( array( 'variant' => 'effective', 'decimals' => 0 ) );
-	check( 'price/effective', $tag->get_value(), '10,200,000' );
+	check( 'price/effective', $tag->get_value(), '10.200.000' );
 
 	$tag = new GPU_Elem_Price( array( 'variant' => 'api', 'decimals' => 0 ) );
-	check( 'price/api', $tag->get_value(), '10,000,000' );
+	check( 'price/api', $tag->get_value(), '10.000.000' );
 
 	$tag = new GPU_Elem_Price( array( 'variant' => 'buffer', 'decimals' => 0 ) );
-	check( 'price/buffer', $tag->get_value(), '200,000' );
+	check( 'price/buffer', $tag->get_value(), '200.000' );
 
 	$tag = new GPU_Elem_Price( array( 'variant' => 'karat' ) );
 	check( 'price/karat', $tag->get_value(), '18k' );
@@ -257,7 +255,7 @@ namespace {
 		'gpu_after'    => ' تومان',
 		'gpu_fallback' => 'هنوز قیمت ثبت نشده',
 	) );
-	check( 'wrapper/before-after', $tag->get_value(), 'قیمت: 10,200,000 تومان' );
+	check( 'wrapper/before-after', $tag->get_value(), 'قیمت: 10.200.000 تومان' );
 
 	// Fallback: no synced price at all → fallback text, no before/after.
 	update_option( 'gpu_state', array() );
@@ -280,7 +278,7 @@ namespace {
 
 	// ------------------------------------------------------- 4) Product fields.
 	$tag = new GPU_Elem_Product_Fields( array( 'field' => 'weight', 'decimals' => 1 ) );
-	check( 'fields/weight', $tag->get_value(), '2.5' );
+	check( 'fields/weight', $tag->get_value(), '2,5' );
 
 	$tag = new GPU_Elem_Product_Fields( array( 'field' => 'making_charge', 'pct_display' => 'raw_number' ) );
 	check( 'fields/making-charge/raw', $tag->get_value(), '15' );
@@ -292,19 +290,19 @@ namespace {
 	check( 'fields/vat/raw', $tag->get_value(), '10' );
 
 	$tag = new GPU_Elem_Product_Fields( array( 'field' => 'making_charge', 'pct_display' => 'money_value' ) );
-	check( 'fields/making-charge/money', $tag->get_value(), '3,825,000' );
+	check( 'fields/making-charge/money', $tag->get_value(), '3.825.000' );
 
 	$tag = new GPU_Elem_Product_Fields( array( 'field' => 'profit', 'pct_display' => 'money_value' ) );
-	check( 'fields/profit/money', $tag->get_value(), '2,409,750' );
+	check( 'fields/profit/money', $tag->get_value(), '2.409.750' );
 
 	$tag = new GPU_Elem_Product_Fields( array( 'field' => 'vat', 'pct_display' => 'money_value' ) );
-	check( 'fields/vat/money', $tag->get_value(), '382,500' );
+	check( 'fields/vat/money', $tag->get_value(), '382.500' );
 
 	$tag = new GPU_Elem_Product_Fields( array( 'field' => 'accessory', 'decimals' => 1 ) );
-	check( 'fields/accessory', $tag->get_value(), '0.5' );
+	check( 'fields/accessory', $tag->get_value(), '0,5' );
 
 	$tag = new GPU_Elem_Product_Fields( array( 'field' => 'stone_fee', 'decimals' => 0 ) );
-	check( 'fields/stone-fee', $tag->get_value(), '500,000' );
+	check( 'fields/stone-fee', $tag->get_value(), '500.000' );
 
 	$tag = new GPU_Elem_Product_Fields( array(
 		'field'        => 'stone_fee',
@@ -312,7 +310,7 @@ namespace {
 		'gpu_after'    => ' تومان',
 		'gpu_fallback' => '—',
 	) );
-	check( 'fields/stone-fee/wrapped', $tag->get_value(), '500,000 تومان' );
+	check( 'fields/stone-fee/wrapped', $tag->get_value(), '500.000 تومان' );
 
 	// Decimal percents must survive display and calculation untouched.
 	$GLOBALS['__gpu_options']['__meta'][12]['_gpu_making_charge_pct'] = '7.7';
@@ -330,28 +328,50 @@ namespace {
 	// 7.7% of the 25,500,000 making base must be exact: 1,963,500.
 	$GLOBALS['__gpu_options']['__meta'][12]['_gpu_making_charge_pct'] = '7.7';
 	$tag = new GPU_Elem_Product_Fields( array( 'field' => 'making_charge', 'pct_display' => 'money_value', 'decimals' => 0 ) );
-	check( 'fields/making-charge/decimal-money-exact', $tag->get_value(), '1,963,500' );
+	check( 'fields/making-charge/decimal-money-exact', $tag->get_value(), '1.963.500' );
 
 	$GLOBALS['__gpu_options']['__meta'][12]['_gpu_making_charge_pct'] = '15';
 
 	// ------------------------------------------------------- 5) Price breakdown.
 	$tag = new GPU_Elem_Product_Price( array( 'component' => 'final_price', 'decimals' => 0 ) );
-	check( 'breakdown/final', $tag->get_value(), '37,717,250' );
+	check( 'breakdown/final', $tag->get_value(), '37.717.250' );
 
 	$tag = new GPU_Elem_Product_Price( array( 'component' => 'raw_gold_value', 'decimals' => 0 ) );
-	check( 'breakdown/raw', $tag->get_value(), '30,600,000' );
+	check( 'breakdown/raw', $tag->get_value(), '30.600.000' );
 
 	$tag = new GPU_Elem_Product_Price( array( 'component' => 'accessory_gold_value', 'decimals' => 0 ) );
-	check( 'breakdown/accessory', $tag->get_value(), '5,100,000' );
+	check( 'breakdown/accessory', $tag->get_value(), '5.100.000' );
 
 	$tag = new GPU_Elem_Product_Price( array( 'component' => 'making_charge', 'decimals' => 0 ) );
-	check( 'breakdown/making', $tag->get_value(), '3,825,000' );
+	check( 'breakdown/making', $tag->get_value(), '3.825.000' );
 
 	$tag = new GPU_Elem_Product_Price( array( 'component' => 'stone_fee', 'decimals' => 0 ) );
-	check( 'breakdown/stone', $tag->get_value(), '500,000' );
+	check( 'breakdown/stone', $tag->get_value(), '500.000' );
 
 	$tag = new GPU_Elem_Product_Price( array( 'component' => 'effective_gold_price', 'decimals' => 0 ) );
-	check( 'breakdown/effective', $tag->get_value(), '10,200,000' );
+	check( 'breakdown/effective', $tag->get_value(), '10.200.000' );
+
+	// ------------------------------------- 5b) Configurable separators.
+	$saved = get_option( 'gpu_settings' );
+
+	$saved['thousand_sep'] = '|';
+	update_option( 'gpu_settings', $saved );
+	$tag = new GPU_Elem_Price( array( 'variant' => 'effective', 'decimals' => 0 ) );
+	check( 'separator/custom-thousands', $tag->get_value(), '10|200|000' );
+
+	$saved['thousand_sep'] = '';
+	update_option( 'gpu_settings', $saved );
+	$tag = new GPU_Elem_Price( array( 'variant' => 'effective', 'decimals' => 0 ) );
+	check( 'separator/no-grouping', $tag->get_value(), '10200000' );
+
+	$saved['thousand_sep'] = 'a7';
+	update_option( 'gpu_settings', $saved );
+	check( 'separator/sanitize-rejects-alnum', GPU_Formatter::sanitize_separator( 'a7', '.' ), '.' );
+	check( 'separator/sanitize-keeps-multibyte', GPU_Formatter::sanitize_separator( '٫', ',' ), '٫' );
+
+	$saved['thousand_sep'] = '.';
+	$saved['decimal_sep']  = ',';
+	update_option( 'gpu_settings', $saved );
 
 	// ------------------------------------------------------- 6) Variation context.
 	\Elementor\Plugin::$instance->documents->current_main_id = 13;

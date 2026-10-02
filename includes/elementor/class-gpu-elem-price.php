@@ -100,13 +100,13 @@ class GPU_Elem_Price extends GPU_Elem_Base {
 			case 'api':
 				$price = GPU_Settings::state_get( 'api_price', null );
 
-				return $this->wrap( null === $price ? '' : number_format_i18n( (float) $price, $decimals ) );
+				return $this->wrap( null === $price ? '' : GPU_Formatter::number( (float) $price, $decimals ) );
 
 			case 'buffer':
-				return $this->wrap( number_format_i18n( (float) GPU_Settings::get_setting( 'buffer', 0 ), $decimals ) );
+				return $this->wrap( GPU_Formatter::number( (float) GPU_Settings::get_setting( 'buffer', 0 ), $decimals ) );
 
 			case 'manual':
-				return $this->wrap( number_format_i18n( (float) GPU_Settings::get_setting( 'manual_price', 0 ), $decimals ) );
+				return $this->wrap( GPU_Formatter::number( (float) GPU_Settings::get_setting( 'manual_price', 0 ), $decimals ) );
 
 			case 'karat':
 				return $this->wrap( (string) GPU_Settings::get_setting( 'karat', '18k' ) );
@@ -123,7 +123,7 @@ class GPU_Elem_Price extends GPU_Elem_Base {
 			default:
 				$price = GPU_Gold_Price_Service::effective_price();
 
-				return $this->wrap( null === $price ? '' : number_format_i18n( $price, $decimals ) );
+				return $this->wrap( null === $price ? '' : GPU_Formatter::number( $price, $decimals ) );
 		}
 	}
 }

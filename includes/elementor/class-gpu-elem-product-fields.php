@@ -124,12 +124,12 @@ class GPU_Elem_Product_Fields extends GPU_Elem_Base {
 			case 'accessory':
 				$value = GPU_Products::accessory_weight( $product_id, $managed_id );
 
-				return $this->wrap( number_format_i18n( $value, $decimals ) );
+				return $this->wrap( GPU_Formatter::number( $value, $decimals ) );
 
 			case 'stone_fee':
 				$value = GPU_Products::stone_fee( $product_id, $managed_id );
 
-				return $this->wrap( number_format_i18n( $value, $decimals ) );
+				return $this->wrap( GPU_Formatter::number( $value, $decimals ) );
 
 			case 'raw_gold_value':
 				$breakdown = $this->product_breakdown( $product, $product_id, $managed_id );
@@ -137,14 +137,14 @@ class GPU_Elem_Product_Fields extends GPU_Elem_Base {
 				return $this->wrap(
 					null === $breakdown
 						? ''
-						: number_format_i18n( $breakdown['raw_gold_value'], $decimals )
+						: GPU_Formatter::number( $breakdown['raw_gold_value'], $decimals )
 				);
 
 			case 'weight':
 			default:
 				$weight = GPU_Products::weight_in_grams( $product, $managed_id );
 
-				return $this->wrap( null === $weight ? '' : number_format_i18n( $weight, $decimals ) );
+				return $this->wrap( null === $weight ? '' : GPU_Formatter::number( $weight, $decimals ) );
 		}
 	}
 
@@ -215,12 +215,14 @@ class GPU_Elem_Product_Fields extends GPU_Elem_Base {
 				break;
 		}
 
-		return number_format_i18n( $value, $decimals );
+		return GPU_Formatter::number( $value, $decimals );
 	}
 
 	/**
-	 * Exact display of a stored percent: locale digits, at most 4 decimals,
-	 * trailing zeros trimmed, never rounded (7.7 → "7.7", 8.25 → "8.25").
+	 * Exact display of a stored percent: at most 4 decimals, trailing zeros
+	 * trimmed, never rounded, always with a plain '.' decimal (7.7 → "7.7",
+	 * 8.25 → "8.25") — it mirrors the field the shop entered, so the number
+	 * on the product page always matches the number in the product editor.
 	 *
 	 * @param float $value
 	 *
@@ -232,11 +234,7 @@ class GPU_Elem_Product_Fields extends GPU_Elem_Base {
 			$plain = '0';
 		}
 
-		$decimals = ( false !== strpos( $plain, '.' ) )
-			? strlen( substr( $plain, strpos( $plain, '.' ) + 1 ) )
-			: 0;
-
-		return number_format_i18n( (float) $plain, $decimals );
+		return $plain;
 	}
 
 	/**

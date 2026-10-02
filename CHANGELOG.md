@@ -4,6 +4,28 @@ All notable changes to Gold Price Updater for WooCommerce are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.3.0] — 2026-10-03
+
+### Added
+- **Configurable number separators** (dashboard → Pricing): a
+  **Thousands Separator** (default `.`) and a **Decimal Separator**
+  (default `,`) now control every number the plugin renders — dashboard
+  cards, sync history, admin notices and all Elementor tags.
+  - Empty Thousands Separator = no digit grouping at all (`10200000`).
+  - Any single character works, including multi-byte ones (`٬`, space, `|`);
+    letters/digits are rejected on save so a separator can never corrupt a
+    price.
+- New `GPU_Formatter` class: the single place that decides how numbers look
+  (replaces direct `number_format_i18n()` calls throughout the plugin).
+
+### Changed
+- Default thousands separator is now `.` (was the WordPress locale
+  separator, typically `,`). Existing installs pick the new defaults up
+  automatically via settings-merge.
+- Raw percent display (Product Fields tag, mode 1) is now emitted with a
+  plain `.` decimal and no grouping — it always mirrors the exact value
+  entered in the product editor (7.7 stays "7.7").
+
 ## [1.2.0] — 2026-09-28
 
 ### Added

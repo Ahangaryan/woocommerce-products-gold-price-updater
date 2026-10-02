@@ -49,6 +49,8 @@ final class GPU_Settings {
 			'round_mode'             => 'none',         // none | nearest | up | down.
 			'round_step'             => 0.0,
 			'decimals'               => 2,
+			'thousand_sep'           => '.',            // digit-group separator ('' = no grouping).
+			'decimal_sep'            => ',',            // decimal separator character.
 
 			// ---- Sync ----------------------------------------------------
 			'update_interval'        => 900,            // seconds.

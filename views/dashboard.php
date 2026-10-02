@@ -74,7 +74,7 @@ $progress_pct  = $total_products > 0 ? round( ( $processed / $total_products ) *
 				<span class="gpu-card-title"><?php echo GPU_Translations::e( 'Gold Price (18K)' ); ?></span>
 				<span class="gpu-card-icon">🥇</span>
 			</div>
-			<div class="gpu-card-value"><?php echo null !== $price ? number_format_i18n( (float) $price ) : '—'; ?></div>
+			<div class="gpu-card-value"><?php echo null !== $price ? GPU_Formatter::number( (float) $price ) : '—'; ?></div>
 			<div class="gpu-card-meta">
 				<span class="gpu-dot <?php echo $api_connected ? '' : 'gpu-dot-error'; ?>"></span>
 				<?php echo $api_connected ?GPU_Translations::e( 'Live from API' ) :GPU_Translations::e( 'Not connected' ); ?>
@@ -86,9 +86,9 @@ $progress_pct  = $total_products > 0 ? round( ( $processed / $total_products ) *
 				<span class="gpu-card-title"><?php echo GPU_Translations::e( 'Effective Price' ); ?></span>
 				<span class="gpu-card-icon">💰</span>
 			</div>
-			<div class="gpu-card-value"><?php echo null !== $effective_price ? number_format_i18n( $effective_price ) : '—'; ?></div>
+			<div class="gpu-card-value"><?php echo null !== $effective_price ? GPU_Formatter::number( $effective_price ) : '—'; ?></div>
 			<div class="gpu-card-meta">
-				+<?php echo number_format_i18n( $buffer ); ?> <?php echo GPU_Translations::e( 'buffer' ); ?>
+				+<?php echo GPU_Formatter::number( $buffer ); ?> <?php echo GPU_Translations::e( 'buffer' ); ?>
 			</div>
 		</div>
 
@@ -228,6 +228,8 @@ $progress_pct  = $total_products > 0 ? round( ( $processed / $total_products ) *
 						<tr><th><?php echo GPU_Translations::e( 'VAT %' ); ?></th><td><input type="number" step="any" min="0" max="100" name="gpu_vat" value="<?php echo esc_attr( $settings['vat_pct'] ); ?>"><span class="description"><?php echo GPU_Translations::e( 'Applied to making charge only.' ); ?></span></td></tr>
 						<tr><th><?php echo GPU_Translations::e( 'Rounding Mode' ); ?></th><td><div class="gpu-field-group"><select name="gpu_round_mode"><?php foreach ( array( 'none' => 'None', 'nearest' => 'Nearest', 'up' => 'Round Up', 'down' => 'Round Down' ) as $val => $label ) : ?><option value="<?php echo esc_attr( $val ); ?>" <?php selected( $settings['round_mode'], $val ); ?>><?php echo esc_html( $label ); ?></option><?php endforeach; ?></select><input type="number" step="any" min="0" name="gpu_round_step" value="<?php echo esc_attr( $settings['round_step'] ); ?>" placeholder="Step" style="max-width:120px"></div><span class="description"><?php echo GPU_Translations::e( 'e.g. step 1000 rounds to nearest/next 1,000.' ); ?></span></td></tr>
 						<tr><th><?php echo GPU_Translations::e( 'Price Decimals' ); ?></th><td><input type="number" min="0" max="6" name="gpu_decimals" value="<?php echo esc_attr( $settings['decimals'] ); ?>"></td></tr>
+						<tr><th><?php echo GPU_Translations::e( 'Thousands Separator' ); ?></th><td><input type="text" maxlength="4" style="max-width:80px" name="gpu_thousand_sep" value="<?php echo esc_attr( $settings['thousand_sep'] ); ?>" placeholder="."><span class="description"><?php echo GPU_Translations::e( 'Character between digit groups (e.g. . , space). Empty = no grouping.' ); ?></span></td></tr>
+						<tr><th><?php echo GPU_Translations::e( 'Decimal Separator' ); ?></th><td><input type="text" maxlength="4" style="max-width:80px" name="gpu_decimal_sep" value="<?php echo esc_attr( $settings['decimal_sep'] ); ?>" placeholder=","><span class="description"><?php echo GPU_Translations::e( 'Character before the decimals (e.g. , or .).' ); ?></span></td></tr>
 					</table>
 				</div>
 			</div>
@@ -308,8 +310,8 @@ $progress_pct  = $total_products > 0 ? round( ( $processed / $total_products ) *
 								<td><?php echo esc_html( $h['id'] ); ?></td>
 								<td><?php echo wp_date( 'M j, Y H:i', (int) $h['started_at'] ); ?></td>
 								<td><?php echo esc_html( $h['source'] ); ?></td>
-								<td><?php echo null === $h['gold_price'] ? '—' : number_format_i18n( (float) $h['gold_price'] ); ?></td>
-								<td><?php echo null === $h['effective_price'] ? '—' : number_format_i18n( (float) $h['effective_price'] ); ?></td>
+								<td><?php echo null === $h['gold_price'] ? '—' : GPU_Formatter::number( (float) $h['gold_price'] ); ?></td>
+								<td><?php echo null === $h['effective_price'] ? '—' : GPU_Formatter::number( (float) $h['effective_price'] ); ?></td>
 								<td><?php echo (int) $h['products_total']; ?></td>
 								<td><span class="gpu-badge gpu-badge-<?php echo 'queued' === $h['status'] ? 'info' : ( 'failed' === $h['status'] ? 'danger' : 'success' ); ?>"><?php echo esc_html( $h['status'] ); ?></span></td>
 							</tr>

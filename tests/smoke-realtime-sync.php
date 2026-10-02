@@ -223,6 +223,7 @@ $GLOBALS['wpdb'] = new Fake_WPDB();
 
 require __DIR__ . '/../includes/class-gpu-logger.php';
 require __DIR__ . '/../includes/class-gpu-settings.php';
+require __DIR__ . '/../includes/class-gpu-formatter.php';
 require __DIR__ . '/../includes/class-gpu-db.php';
 require __DIR__ . '/../includes/class-gpu-products.php';
 require __DIR__ . '/../includes/class-gpu-gold-price-service.php';

@@ -85,10 +85,9 @@ final class GPU_Sync {
 				GPU_Settings::push_notice(
 					self::NOTICE_KEY,
 					sprintf(
-						/* translators: %1$s: new price, %2$s: change percent */
-						__( 'Gold price changed by %2$s%% (to %1$s) — above the allowed maximum. Products were NOT updated; adjust the limit or use "Force sync".', 'gold-price-updater' ),
-						number_format_i18n( $base_price ),
-						number_format_i18n( abs( $pct ), 1 )
+						/* translators: %1$s: new price, %2$s: change percent */							__( 'Gold price changed by %2$s%% (to %1$s) — above the allowed maximum. Products were NOT updated; adjust the limit or use "Force sync".', 'gold-price-updater' ),
+						GPU_Formatter::number( $base_price ),
+						GPU_Formatter::number( abs( $pct ), 1 )
 					)
 				);
 				return self::fail( $sync_id, 'Price-change guard tripped (+' . $pct . '%).', false );
